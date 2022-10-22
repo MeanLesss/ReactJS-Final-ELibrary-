@@ -53,7 +53,7 @@ export default function LogIn() {
             id="outlined-textarea"
             label="Username"
             placeholder="Username"
-            color="secondary"
+            color="success"
           />
           <br /><br />
           <TextField
@@ -62,10 +62,10 @@ export default function LogIn() {
             id="outlined-textarea"
             label="Password"
             placeholder="password"
-            color="secondary"
+            color="success"
           />
           <br /><br />
-          <Button type="submit" variant="contained" color="secondary" endIcon={<LoginIcon />}>
+          <Button type="submit" variant="contained" color="success" endIcon={<LoginIcon />}>
             Log in
           </Button>
         </form>
