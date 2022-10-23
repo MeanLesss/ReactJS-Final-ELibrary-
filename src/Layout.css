@@ -1,6 +1,10 @@
 h1{
+    color: darkcyan;
     margin:0;
-    padding:0;
+    padding:10px;
+    background-color:lightgreen;
+    border:1px solid black;
+    border-radius: 5px;
     /* width:200px; */
 }
 label{
@@ -8,15 +12,21 @@ label{
     font-weight: bold;
     background-color:lightgreen;
     padding:10px;
+    border:1px solid black;
     border-radius: 5px;
-
 }
 #navBar{
-    background-color:rgba(32,201,151,.6);
-    padding: 20px;
+    background-color:rgba(32,201,151,.1);
+    padding: 20px 35px;
+    margin-bottom: 20px;
     display:flex;
     justify-content:space-between;
-    border:3px solid lime;
+    border-radius: 5px;
+    /* border:1px solid black; */
+    filter:
+    drop-shadow(3px 5px 0px rgba(32,201,151,1))
+    /* drop-shadow(3px 5px 0px green) */
+    drop-shadow(3px 5px 0px lime);
 }
 #userInfo{
     display:flex;

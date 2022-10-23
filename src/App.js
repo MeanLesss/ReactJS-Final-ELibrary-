@@ -23,17 +23,15 @@ export default function LogIn() {
     e.preventDefault();
 
     const res = await GetLogin({ api_token: process.env.REACT_APP_API_TOKEN, name, pass })
-    console.log(res);
+    // console.log(res);
     if (res.status != 'SUCCESS' || res == null) {
       setError(true);
       setErrorText(res.error);
       return;
     }
 
-   
     localStorage.setItem('user',JSON.stringify(res));
     navigate('/'+res.user.role.toLowerCase(),{replace:true})
-
 
     setError(false);
   }, [name, pass])
