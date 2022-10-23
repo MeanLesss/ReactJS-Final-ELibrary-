@@ -1,0 +1,24 @@
+h1{
+    margin:0;
+    padding:0;
+    /* width:200px; */
+}
+label{
+    color:darkcyan;
+    font-weight: bold;
+    background-color:lightgreen;
+    padding:10px;
+    border-radius: 5px;
+
+}
+#navBar{
+    background-color:rgba(32,201,151,.6);
+    padding: 20px;
+    display:flex;
+    justify-content:space-between;
+}
+#userInfo{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
