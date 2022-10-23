@@ -10,18 +10,20 @@ import { ClassNames } from '@emotion/react';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import {useNavigate} from 'react-router-dom';
+import { inputUnstyledClasses } from '@mui/base';
 
 export default function LogIn() {
   const navigate = useNavigate();
-  const name = createRef();
-  const pass = createRef();
+  const name = createRef('');
+  const pass = createRef('');
   const [err, setError] = useState(false);
   const [errText, setErrorText] = useState('');
 
   const DoSubmit = useCallback(async (e) => {
     e.preventDefault();
+
     const res = await GetLogin({ api_token: process.env.REACT_APP_API_TOKEN, name, pass })
-    console.log(res)
+    console.log(res);
     if (res.status != 'SUCCESS' || res == null) {
       setError(true);
       setErrorText(res.error);
@@ -56,7 +58,7 @@ export default function LogIn() {
           <br />
           <TextField
             inputRef={name}
-            id="outlined-textarea"
+            id="outlined-textarea inputU"
             label="Username"
             placeholder="Username"
             color="success"
