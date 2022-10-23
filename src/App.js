@@ -9,10 +9,10 @@ import { GetLogin } from './AuthServices';
 import { ClassNames } from '@emotion/react';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
-import { Snackbar } from '@mui/material';
+import {useNavigate} from 'react-router-dom';
 
 export default function LogIn() {
-
+  const navigate = useNavigate();
   const name = createRef();
   const pass = createRef();
   const [err, setError] = useState(false);
@@ -22,11 +22,16 @@ export default function LogIn() {
     e.preventDefault();
     const res = await GetLogin({ api_token: process.env.REACT_APP_API_TOKEN, name, pass })
     console.log(res)
-    if (res.status != 'SUCCESS') {
+    if (res.status != 'SUCCESS' || res == null) {
       setError(true);
       setErrorText(res.error);
       return;
     }
+   
+    localStorage.setItem('user',JSON.stringify(res));
+    navigate('/'+res.user.role.toLowerCase(),{replace:true})
+
+    setError(false);
   }, [name, pass])
 
   return (
