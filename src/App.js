@@ -29,6 +29,7 @@ export default function LogIn() {
       setErrorText(res.error);
       return;
     }
+
    
     localStorage.setItem('user',JSON.stringify(res));
     navigate('/'+res.user.role.toLowerCase(),{replace:true})

@@ -1,5 +1,5 @@
 //all services
-export const GetLogin = (info) => {
+export const GetLogin = async (info) => {
     // console.log(info.name.current.value);
     // console.log(info.api_token);
     var formdata = new FormData();
@@ -13,11 +13,14 @@ export const GetLogin = (info) => {
         redirect: 'follow'
     };
 
-    var res = fetch(process.env.REACT_APP_API_LOGIN, requestOptions)
+    var res = await fetch(process.env.REACT_APP_API_LOGIN, requestOptions)
         .then(response => response.json())
-        // .then(result => console.log(result))
-        .then(result => {return result})
+        .then(result => { return result })
         .catch(error => console.log('error', error));
-        
+        // console.log(res);
+    if (res.user != null && res.user.role == 'Student') {
+        res = { token: '', error: 'Invalid username or password!', user: null, status: 'FAILED' }
+    }
+
     return res;
 }

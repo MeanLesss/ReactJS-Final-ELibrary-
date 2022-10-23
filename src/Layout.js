@@ -57,7 +57,7 @@ export default function Layout() {
           </div>
         </div>
 
-        {/* this Menu part invoke when click on the avatar */}
+        {/* this Menu part invoke when click on the avatar (profile pics)*/}
         <Menu
           anchorEl={anchorEl}
           id="account-menu"
