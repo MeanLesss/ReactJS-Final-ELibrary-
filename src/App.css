@@ -25,9 +25,7 @@
 #alert{
     animation: shakeIdle 2s infinite;
 }
-#subBut{
-    animation: shake 2s ease-in;
-}
+
 @keyframes shakeIdle {
     0% {
         transform: scale(0.95);
@@ -42,18 +40,5 @@
     100% {
         transform: scale(0.95);
         box-shadow: 0 0 0 0 rgba(51, 217, 178, 0);
-    }
-}
-@keyframes shake {
-    0% {
-        transform: translateX(1);
-    }
-
-    50% {
-        transform: translateX(-1);
-    }
-
-    100% {
-        transform: translateX(1);
     }
 }
