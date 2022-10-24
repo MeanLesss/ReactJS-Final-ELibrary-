@@ -7,7 +7,7 @@ h1{
     border-radius: 5px;
     /* width:200px; */
 }
-label{
+#userInfo label{
     color:darkcyan;
     font-weight: bold;
     background-color:lightgreen;
@@ -24,9 +24,9 @@ label{
     border-radius: 5px;
     /* border:1px solid black; */
     filter:
-    drop-shadow(3px 5px 0px rgba(32,201,151,1))
+    drop-shadow(5px 5px 0px rgba(32,201,151,1))
     /* drop-shadow(3px 5px 0px green) */
-    drop-shadow(3px 5px 0px lime);
+    drop-shadow(-5px -5px 0px lime);
 }
 #userInfo{
     display:flex;

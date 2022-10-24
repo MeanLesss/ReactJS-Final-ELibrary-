@@ -18,7 +18,8 @@ export default function Layout() {
     localStorage.clear();
     navigate('/', { replace: true });
   })
-  const [name, setName] = React.useState('Username');
+  const info = JSON.parse(localStorage.getItem('user'))
+  const [name, setName] = React.useState(info.user.username);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -32,7 +33,7 @@ export default function Layout() {
       <div>
         {/* this part should have nav bar */}
         <div id="navBar">
-          <h1>MyStat Library</h1>
+          <h1>MyStat Library 📖</h1>
           <div id="userInfo">
             <label>{name}</label>
             <Tooltip title="Account settings">
@@ -69,6 +70,7 @@ export default function Layout() {
             sx: {
               overflow: 'visible',
               mt: 1.5,
+              width: 200,
               '& .MuiAvatar-root': {
                 width: 32,
                 height: 32,
@@ -95,16 +97,16 @@ export default function Layout() {
           <MenuItem>
             <Avatar /> Profile
           </MenuItem>
-          <MenuItem>
+          {/* <MenuItem>
             <Avatar /> My account
-          </MenuItem>
+          </MenuItem> */}
           <Divider />
-          <MenuItem>
+          {/* <MenuItem>
             <ListItemIcon>
               <PersonAdd fontSize="small" />
             </ListItemIcon>
             Add another account
-          </MenuItem>
+          </MenuItem> */}
           <MenuItem>
             <ListItemIcon>
               <Settings fontSize="small" />
