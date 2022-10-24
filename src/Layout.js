@@ -45,7 +45,9 @@ export default function Layout() {
                 aria-haspopup="true"
                 aria-expanded={open ? 'true' : undefined}
               >
-                <Avatar sx={{
+                <Avatar 
+                  id="avatar" 
+                  sx={{
                   width: 40,
                   height: 40,
                   backgroundColor: '#777',

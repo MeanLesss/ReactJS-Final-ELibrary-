@@ -49,9 +49,9 @@ export default function LogIn() {
         </div>
         <br />
         <form onSubmit={DoSubmit}>
-          <h1>Log in 🏃‍♂️</h1> <br />
+          <h1>Log in 🚀</h1> <br />
          
-            {err && <Alert severity="error">
+            {err && <Alert id="alert" severity="error">
               <AlertTitle>{errText}</AlertTitle>
             </Alert>}
           <br />
@@ -72,7 +72,7 @@ export default function LogIn() {
             color="success"
           />
           <br /><br />
-          <Button type="submit" variant="contained" color="success" endIcon={<LoginIcon />}>
+          <Button id="subBut" type="submit" variant="contained" color="success" endIcon={<LoginIcon />}>
             Log in
           </Button>
         </form>
