@@ -1,0 +1,17 @@
+#sum-wrapper{
+    width:100%;
+    display: flex;
+    justify-content:center;
+    border-top:1px solid green;
+}
+#summary-container{
+    width: 100%;
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(50%,1fr));
+    /* gap:2px; */
+    border:1px solid rebeccapurple;
+}
+#box{
+    /* box-shadow: 4px 4px #777; */
+    width:100%;
+}
