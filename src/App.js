@@ -31,7 +31,7 @@ export default function LogIn() {
     }
 
     localStorage.setItem('user',JSON.stringify(res));
-    navigate('/'+res.user.role.toLowerCase(),{replace:true})
+    navigate('/'+res.user.role.toLowerCase()+'/dashboard',{replace:true})
 
     setError(false);
   }, [name, pass])

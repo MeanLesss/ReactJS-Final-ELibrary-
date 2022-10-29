@@ -14,38 +14,37 @@ export default function TeacherDash() {
 
   const navigate = useNavigate();
   const teacher = JSON.parse(localStorage.getItem('user'));
-  const [summary, setSummary] = useState({});
   const [groups, setGroups] = useState(0);
   const [books, setBooks] = useState(0);
-  let [link, setLink] = useState('');
-
-
-//test command
+  
+  
+  //test command
   //here we use useEffect to get Non-promise data the set what need
   useEffect(() => {
     GetSummary({ api_token: process.env.REACT_APP_API_TOKEN, user_token: teacher.token })
-      .then(data => {
-        if (data.status === 'SUCCESS') {
-          setGroups(data.summary.groups);
-          setBooks(data.summary.books);
-        } else {
-          setGroups('Error cannot find data');
-          setBooks('Error cannot find data');
-        }
-      })
+    .then(data => {
+      if (data.status === 'SUCCESS') {
+        setGroups(data.summary.groups);
+        setBooks(data.summary.books);
+      } else {
+        setGroups('Error cannot find data');
+        setBooks('Error cannot find data');
+      }
+    })
   }, [(process.env.REACT_APP_API_TOKEN), (teacher.token)]);
-
-
-  const ShowMore = useCallback((link)=>{
-    navigate('/teacher/groups',{replace:true});
-  })
-
+  
+  
+  const ShowMore = (e,navLink)=>{
+    navigate(navLink,{replace:true});
+  }
+  
   // console.log(summary);
   const DisplayCard = useCallback((props) => {
+    let link;
     if (props.title.includes('groups')) {
-      setLink = 'teacher/groups'
+      link = '/teacher/groups'
     } else {
-      setLink = 'teacher/books'
+      link = '/teacher/books'
     }
     return (
       <Card>
@@ -58,8 +57,7 @@ export default function TeacherDash() {
           </Typography>
         </CardContent>
         <CardActions>
-           {/* onClick={ShowMore(link)} */}
-          <Button size="small" onClick={ShowMore}>Show More</Button>
+          <Button size="small" onClick={event => ShowMore(event,link)}>Show More</Button>
         </CardActions>
       </Card>
     )
@@ -67,16 +65,6 @@ export default function TeacherDash() {
 
   return (
     <>
-      <div>
-        This need another nav bar just a thin 1
-        <nav>
-          <ul>
-            <li>Books</li>
-            <li>Groups</li>
-            <li>Profile</li>
-          </ul>
-        </nav>
-      </div>
       <div id="sum-wrapper">
         <Box sx={{ flexGrow: 1, p: 2 }}>
           <Grid
