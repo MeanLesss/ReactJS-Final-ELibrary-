@@ -39,7 +39,21 @@ export const GetSummary = async (info) => {
         .then(response => response.json())
         .then(result => { return result })
         .catch(error => console.log('error', error));
-        // console.log(res);
+    // console.log(res);
     return res;
 
+}
+
+export const GetGroupList = async (info) => {
+    var requestOptions = {
+        method: 'GET',
+        redirect: 'follow'
+    };
+
+    var res = await fetch("http://172.104.166.110/FT_SD_M_11/api/groups.php?api_token="+ process.env.REACT_APP_API_TOKEN + "&" + "user_token="+ info, requestOptions)
+        .then(response => response.json())
+        .then(result => { return result })
+        .catch(error => console.log('error', error));
+        // console.log(res);
+    return res;
 }

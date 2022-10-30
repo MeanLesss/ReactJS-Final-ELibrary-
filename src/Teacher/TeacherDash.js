@@ -9,8 +9,8 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
-import { Outlet, useNavigate } from 'react-router-dom';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import { Outlet, useNavigate } from 'react-router-dom';
 import '../Teacher/Teacher.css'
 
 export default function TeacherDash() {
@@ -72,7 +72,7 @@ export default function TeacherDash() {
         <Breadcrumbs aria-label="breadcrumb" 
         
         separator={<NavigateNextIcon fontSize="large" />}>
-          <Typography color="text.primary">Home</Typography>
+          <Typography color="text.primary">...</Typography>
         
           <Typography color="text.primary" fontSize="20pt">Dashboard</Typography>
         </Breadcrumbs>
