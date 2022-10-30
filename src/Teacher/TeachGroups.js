@@ -81,6 +81,7 @@ export default function TeachGroups() {
           spacing={2}>
           {[...Array(12)].map((_, i) => (
             <Grid
+            key={i}
               {...{ xs: 6, sm: 6, md: 6, lg: 4 }}
               minHeight={160}>
               <GroupCard  {...{ title: 'Group:' + (i + 1), count: i + 1 }} />
