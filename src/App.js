@@ -1,4 +1,4 @@
-import React, { createRef, useCallback, useState } from 'react';
+import React, { createRef, useCallback, useState,useEffect } from 'react';
 import './App.css';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -18,7 +18,11 @@ export default function LogIn() {
   const pass = createRef('');
   const [err, setError] = useState(false);
   const [errText, setErrorText] = useState('');
-
+  
+  useEffect(()=>{
+    localStorage.clear();
+  })
+  
   const DoSubmit = useCallback(async (e) => {
     e.preventDefault();
 

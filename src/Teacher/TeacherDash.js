@@ -7,7 +7,10 @@ import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
+import Breadcrumbs from '@mui/material/Breadcrumbs';
+import Link from '@mui/material/Link';
 import { Outlet, useNavigate } from 'react-router-dom';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import '../Teacher/Teacher.css'
 
 export default function TeacherDash() {
@@ -16,28 +19,28 @@ export default function TeacherDash() {
   const teacher = JSON.parse(localStorage.getItem('user'));
   const [groups, setGroups] = useState(0);
   const [books, setBooks] = useState(0);
-  
-  
+
+
   //test command
   //here we use useEffect to get Non-promise data the set what need
   useEffect(() => {
     GetSummary({ api_token: process.env.REACT_APP_API_TOKEN, user_token: teacher.token })
-    .then(data => {
-      if (data.status === 'SUCCESS') {
-        setGroups(data.summary.groups);
-        setBooks(data.summary.books);
-      } else {
-        setGroups('Error cannot find data');
-        setBooks('Error cannot find data');
-      }
-    })
+      .then(data => {
+        if (data.status === 'SUCCESS') {
+          setGroups(data.summary.groups);
+          setBooks(data.summary.books);
+        } else {
+          setGroups('Error cannot find data');
+          setBooks('Error cannot find data');
+        }
+      })
   }, [(process.env.REACT_APP_API_TOKEN), (teacher.token)]);
-  
-  
-  const ShowMore = (e,navLink)=>{
-    navigate(navLink,{replace:true});
+
+
+  const ShowMore = (e, navLink) => {
+    navigate(navLink, { replace: true });
   }
-  
+
   // console.log(summary);
   const DisplayCard = useCallback((props) => {
     let link;
@@ -57,7 +60,7 @@ export default function TeacherDash() {
           </Typography>
         </CardContent>
         <CardActions>
-          <Button size="small" onClick={event => ShowMore(event,link)}>Show More</Button>
+          <Button size="small" onClick={event => ShowMore(event, link)}>Show More</Button>
         </CardActions>
       </Card>
     )
@@ -65,22 +68,21 @@ export default function TeacherDash() {
 
   return (
     <>
+      <section id="breadCrumbs">
+        <Breadcrumbs aria-label="breadcrumb" 
+        
+        separator={<NavigateNextIcon fontSize="large" />}>
+          <Typography color="text.primary">Home</Typography>
+        
+          <Typography color="text.primary" fontSize="20pt">Dashboard</Typography>
+        </Breadcrumbs>
+      </section>
+
       <div id="sum-wrapper">
         <Box sx={{ flexGrow: 1, p: 2 }}>
           <Grid
             container
             spacing={2}
-            sx={{
-              '--Grid-borderWidth': '1px',
-              borderTop: 'var(--Grid-borderWidth) solid',
-              borderLeft: 'var(--Grid-borderWidth) solid',
-              borderColor: 'divider',
-              '& > div': {
-                borderRight: 'var(--Grid-borderWidth) solid',
-                borderBottom: 'var(--Grid-borderWidth) solid',
-                borderColor: 'divider',
-              },
-            }}
           >
             <Grid
               {...{ xs: 12, sm: 6, md: 4, lg: 6 }}

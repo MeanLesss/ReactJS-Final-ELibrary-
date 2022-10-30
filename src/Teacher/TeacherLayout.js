@@ -29,7 +29,8 @@ function ResponsiveAppBar() {
 
     const GotoPage = (e, link) => {
         navigate('/teacher/' + link, { replace: true });
-        console.log(link);
+        
+        // console.log(link);
     }
 
     return (
@@ -71,7 +72,8 @@ function ResponsiveAppBar() {
                             >
                                 {pages.map((page) => (
                                     <MenuItem key={page} onClick={handleCloseNavMenu}>
-                                        <Button textAlign="center"
+                                        <Button 
+                                            textalign="center"
                                             id="navButton"
                                             onClick={event => GotoPage(event, page)}>
                                             {page}
