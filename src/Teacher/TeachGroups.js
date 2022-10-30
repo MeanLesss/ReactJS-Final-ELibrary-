@@ -33,10 +33,19 @@ export default function TeachGroups() {
       <Card>
         <CardContent >
           <Typography sx={{ fontSize: 14 }} color="black" gutterBottom>
-            ID : {props.title}
+            ID : {props.count}
           </Typography>
-          <Typography variant="h5" component="div" sx={{ display: 'flex', justifyContent: 'center', fontSize: 50 }}>
-            {props.count}
+          <Typography
+            variant="h5"
+            component="div"
+            sx={{
+              display: 'flex',
+              justifyContent: 'center', 
+              fontSize: 30, 
+              backgroundColor: 'lightgreen',
+              borderRadius: '5px'
+            }}>
+            {props.title}
           </Typography>
         </CardContent>
         <CardActions>
@@ -55,7 +64,6 @@ export default function TeachGroups() {
           separator={<NavigateNextIcon fontSize="large" />}>
           <Link
             underline="hover"
-            key="2"
             color="inherit"
             href="/teacher/Dashboard"
           >
@@ -66,26 +74,18 @@ export default function TeachGroups() {
         </Breadcrumbs>
       </section>
 
-      <div>TeachGroups</div>
+      <h1>All Groups</h1>
       <Box sx={{ flexGrow: 1, p: 2 }}>
         <Grid
           container
           spacing={2}>
-          <Grid
-            {...{ xs: 6, sm: 6, md: 6, lg: 4 }}
-            minHeight={160}>
-            <GroupCard  {...{ title: 'Number of groups:', count: 0 }} />
-          </Grid>
-          <Grid
-            {...{ xs: 6, sm: 6, md: 6, lg: 4 }}
-            minHeight={160}>
-            <GroupCard {...{ title: 'Number of books:', count: 12 }} />
-          </Grid>
-          <Grid
-            {...{ xs: 6, sm: 6, md: 6, lg: 4 }}
-            minHeight={160}>
-            <GroupCard {...{ title: 'Number of books:', count: 12 }} />
-          </Grid>
+          {[...Array(12)].map((_, i) => (
+            <Grid
+              {...{ xs: 6, sm: 6, md: 6, lg: 4 }}
+              minHeight={160}>
+              <GroupCard  {...{ title: 'Group:' + (i + 1), count: i + 1 }} />
+            </Grid>
+          ))}
         </Grid>
       </Box>
 
