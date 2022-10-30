@@ -85,13 +85,13 @@ export default function TeacherDash() {
             spacing={2}
           >
             <Grid
-              {...{ xs: 12, sm: 6, md: 4, lg: 6 }}
+              {...{ xs: 12, sm: 6, md: 6, lg: 6 }}
               minHeight={160}
             >
               <DisplayCard  {...{ title: 'Number of groups:', count: groups }} />
             </Grid>
             <Grid
-              {...{ xs: 12, sm: 6, md: 4, lg: 6 }}
+              {...{ xs: 12, sm: 6, md: 6, lg: 6 }}
               minHeight={160}
             >
               <DisplayCard {...{ title: 'Number of books:', count: books }} />
