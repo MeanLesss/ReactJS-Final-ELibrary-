@@ -12,6 +12,7 @@ export default function AppRoute() {
   return (
         <Routes>
             <Route path='/' element={<LogIn/>}></Route>
+
             <Route path='teacher/dashboard' element={<Layout/>}>
                 <Route element={<TeacherLayout/>}>
                     <Route index element={<TeacherDash/>}></Route>
