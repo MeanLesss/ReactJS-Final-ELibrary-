@@ -61,8 +61,7 @@ export const GetGroupList = async (info) => {
     return res;
 }
 export const GetStudents = async (info) => {
-
-    console.log(info)
+    // console.log(info)
     var formdata = new FormData();
     formdata.append("api_token", process.env.REACT_APP_API_TOKEN);
     formdata.append("group_id", info.group_id);

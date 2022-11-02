@@ -16,26 +16,31 @@ import { useNavigate } from 'react-router-dom';
 export default function TeachGroups() {
   const navigate = useNavigate();
   let [groupList, setGroupList] = useState();
-  // let [students,setStudents] = useState();
+  let [students, setStudents] = useState();
   let userToken = JSON.parse(localStorage.getItem('user'));
-  
+
   useEffect(() => {
     localStorage.removeItem('students');
     GetGroupList(userToken.token).then(data => setGroupList(data));
   }, [userToken.token])
   // console.log(groupList);
 
-  const ShowStudent = (event,props)=>{
+  const ShowStudent = (event, props) => {
     // console.log(props);
     //**********then clear localStorage of students first before add the new student list */
-    GetStudents({group_id:props.id,user_token: userToken.token})
-    .then(data=> {
-      if(data.status === 'SUCCESS'){
-        localStorage.setItem('students',JSON.stringify(data));
-      }
-    });
-    //**********here need to navigate and save the student in localStorage */
-    navigate('students',{replace:true}); 
+    GetStudents({ group_id: props.id, user_token: userToken.token })
+      .then(data => {
+        if (data.status === 'SUCCESS') {
+          localStorage.setItem('students', JSON.stringify(data));
+          setStudents(data);
+        }
+        console.log(data);
+      }).then(() => {
+        if (localStorage.students != null) {
+          //**********here need to navigate and save the student in localStorage */
+          navigate('students', { replace: true })
+        }
+      })
   }
 
   const GroupCard = useCallback((props) => { //render the card style
@@ -59,31 +64,15 @@ export default function TeachGroups() {
           </Typography>
         </CardContent>
         <CardActions>
-          <Button size="/small" onClick={event => ShowStudent(event,{id:props.id,user_token:userToken})}>Show More</Button>
+          <Button size="/small" onClick={event => ShowStudent(event, { id: props.id, user_token: userToken })}>Show More</Button>
         </CardActions>
       </Card>
     )
   })
-
-  //render the actuall interface
-  if (groupList) {
-    return (
-      <>
-        <section id="breadCrumbs">
-          <Breadcrumbs aria-label="breadcrumb"
-
-            separator={<NavigateNextIcon fontSize="large" />}>
-            <Link
-              underline="hover"
-              color="inherit"
-              href="/teacher/Dashboard">
-              Home
-            </Link>
-
-            <Typography color="text.primary" fontSize="20pt">Groups</Typography>
-          </Breadcrumbs>
-        </section>
-
+  //Display all group Card
+  const DisplayContent = useCallback(() => {
+    if (groupList) {
+      return (
         <Container sx={{ flexGrow: 1, p: 2 }}>
           <h1>All Groups</h1>
           <Grid
@@ -99,10 +88,32 @@ export default function TeachGroups() {
             ))}
           </Grid>
         </Container>
-      </>
-    )
-  }
-  else{
-    return <Container><h1> Loading....</h1></Container>
-  }
+      )
+    }
+    else {
+      return <Container><h1> Loading....</h1></Container>
+    }
+  });
+
+  //render the actuall interface
+  return (
+    <>
+      <section id="breadCrumbs">
+        <Breadcrumbs aria-label="breadcrumb"
+
+          separator={<NavigateNextIcon fontSize="large" />}>
+          <Link
+            underline="hover"
+            color="inherit"
+            href="/teacher/Dashboard">
+            Home
+          </Link>
+
+          <Typography color="text.primary" fontSize="20pt">Groups</Typography>
+        </Breadcrumbs>
+      </section>
+
+      <DisplayContent />
+    </>
+  )
 }
