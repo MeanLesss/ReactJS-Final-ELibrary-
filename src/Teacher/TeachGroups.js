@@ -26,6 +26,8 @@ export default function TeachGroups() {
 
   const ShowStudent = (event,props)=>{
     // console.log(props);
+    //**********here need to navigate and save the student in localStorage */
+    //**********then clear localStorage of students first before add the new student list */
     GetStudents({group_id:props.id,user_token: userToken.token}).then(data=> setStudents(data));
   }
   console.log(students);
