@@ -15,41 +15,9 @@ import Paper from '@mui/material/Paper';
 export default function TeachStudent() {
 
     const [students, setStudents] = useState(JSON.parse(localStorage.getItem('students')));
-    const [ArrStudent, setArrStudent] = useState(students.students);
-
+    // const [ArrStudent, setArrStudent] = useState(students.students);
 
     // console.log(ArrStudent);
-
-    // const Table = useCallback((props) => {
-    //     return (
-    //         <TableContainer component={Paper}>
-    //             <Table sx={{ minWidth: 650 }} aria-label="simple table">
-    //                 <TableHead>
-    //                     <TableRow>
-    //                         <TableCell>ID</TableCell>
-    //                         <TableCell align="right">Username</TableCell>
-    //                         <TableCell align="right">Password</TableCell>
-    //                     </TableRow>
-    //                 </TableHead>
-    //                 <TableBody>
-    //                     {[...ArrStudent].map((student) => (
-    //                         // <TableRow
-    //                         //     key={student.id}
-    //                         //     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-    //                         //     <TableCell component="th" scope="row">
-    //                         //         {student.id}
-    //                         //     </TableCell>
-    //                         //     <TableCell align="right">{student.username}</TableCell>
-    //                         //     <TableCell align="right">{student.pwd}</TableCell>
-    //                         // </TableRow>
-    //                         <div>{student.username}</div>
-    //                     ))}
-    //                 </TableBody>
-    //             </Table>
-    //         </TableContainer>
-    //     );
-    // })
-    console.log(ArrStudent);
 
     //render the student list
     const DisplayContent = useCallback((event) => {
@@ -59,29 +27,29 @@ export default function TeachStudent() {
                 <Container>
                     <h1>All Students</h1>
                     <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>ID</TableCell>
-                            <TableCell align="center">Username</TableCell>
-                            <TableCell align="center">Password</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {[...ArrStudent].map((student) => (
-                            <TableRow
-                                key={student.id}
-                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                <TableCell component="th" scope="row">
-                                    {student.id}
-                                </TableCell>
-                                <TableCell align="center">{student.username}</TableCell>
-                                <TableCell align="center">{student.pwd}</TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>ID</TableCell>
+                                    <TableCell align="center">Username</TableCell>
+                                    <TableCell align="center">Password</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {[...students.students].map((student) => (
+                                    <TableRow
+                                        key={student.id}
+                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                        <TableCell component="th" scope="row">
+                                            {student.id}
+                                        </TableCell>
+                                        <TableCell align="center">{student.username}</TableCell>
+                                        <TableCell align="center">{student.pwd}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
                 </Container>
             )
         } else {
@@ -116,9 +84,6 @@ export default function TeachStudent() {
                 </Breadcrumbs>
             </section>
             <DisplayContent />
-            {/* <Table /> */}
-            
         </>
     )
-
 }
