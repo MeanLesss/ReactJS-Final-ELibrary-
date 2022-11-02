@@ -11,26 +11,32 @@ import CardContent from '@mui/material/CardContent';
 import Grid from '@mui/material/Unstable_Grid2';
 import Container from '@mui/material/Container';
 import { GetGroupList, GetStudents } from '../AuthServices';
-import { useResolvedPath } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export default function TeachGroups() {
-
+  const navigate = useNavigate();
   let [groupList, setGroupList] = useState();
-  let [students,setStudents] = useState();
+  // let [students,setStudents] = useState();
   let userToken = JSON.parse(localStorage.getItem('user'));
-
+  
   useEffect(() => {
+    localStorage.removeItem('students');
     GetGroupList(userToken.token).then(data => setGroupList(data));
   }, [userToken.token])
   // console.log(groupList);
 
   const ShowStudent = (event,props)=>{
     // console.log(props);
-    //**********here need to navigate and save the student in localStorage */
     //**********then clear localStorage of students first before add the new student list */
-    GetStudents({group_id:props.id,user_token: userToken.token}).then(data=> setStudents(data));
+    GetStudents({group_id:props.id,user_token: userToken.token})
+    .then(data=> {
+      if(data.status === 'SUCCESS'){
+        localStorage.setItem('students',JSON.stringify(data));
+      }
+    });
+    //**********here need to navigate and save the student in localStorage */
+    navigate('students',{replace:true}); 
   }
-  console.log(students);
 
   const GroupCard = useCallback((props) => { //render the card style
     return (
