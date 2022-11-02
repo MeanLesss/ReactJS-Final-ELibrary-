@@ -9,39 +9,41 @@ import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Grid from '@mui/material/Unstable_Grid2';
-import { GetGroupList } from '../AuthServices';
+import Container from '@mui/material/Container';
+import { GetGroupList, GetStudents } from '../AuthServices';
+import { useResolvedPath } from 'react-router-dom';
 
 export default function TeachGroups() {
 
   let [groupList, setGroupList] = useState();
-  let userToken = localStorage.getItem('user');
+  let [students,setStudents] = useState();
+  let userToken = JSON.parse(localStorage.getItem('user'));
 
   useEffect(() => {
     GetGroupList(userToken.token).then(data => setGroupList(data));
   }, [userToken.token])
-  console.log(groupList);
+  // console.log(groupList);
 
+  const ShowStudent = (event,props)=>{
+    // console.log(props);
+    GetStudents({group_id:props.id,user_token: userToken.token}).then(data=> setStudents(data));
+  }
+  console.log(students);
 
-  const GroupCard = useCallback((props) => {
-    let link;
-    // if (props.title.includes('groups')) {
-    //   link = '/teacher/groups'
-    // } else {
-    //   link = '/teacher/books'
-    // }
+  const GroupCard = useCallback((props) => { //render the card style
     return (
       <Card>
         <CardContent >
           <Typography sx={{ fontSize: 14 }} color="black" gutterBottom>
-            ID : {props.count}
+            ID : {props.id}
           </Typography>
           <Typography
             variant="h5"
             component="div"
             sx={{
               display: 'flex',
-              justifyContent: 'center', 
-              fontSize: 30, 
+              justifyContent: 'center',
+              fontSize: 30,
               backgroundColor: 'lightgreen',
               borderRadius: '5px'
             }}>
@@ -49,47 +51,50 @@ export default function TeachGroups() {
           </Typography>
         </CardContent>
         <CardActions>
-          {/* <Button size="small" onClick={event => ShowMore(event, link)}>Show More</Button> */}
+          <Button size="/small" onClick={event => ShowStudent(event,{id:props.id,user_token:userToken})}>Show More</Button>
         </CardActions>
       </Card>
     )
   })
 
+  //render the actuall interface
+  if (groupList) {
+    return (
+      <>
+        <section id="breadCrumbs">
+          <Breadcrumbs aria-label="breadcrumb"
 
-  return (
-    <>
-      <section id="breadCrumbs">
-        <Breadcrumbs aria-label="breadcrumb"
+            separator={<NavigateNextIcon fontSize="large" />}>
+            <Link
+              underline="hover"
+              color="inherit"
+              href="/teacher/Dashboard">
+              Home
+            </Link>
 
-          separator={<NavigateNextIcon fontSize="large" />}>
-          <Link
-            underline="hover"
-            color="inherit"
-            href="/teacher/Dashboard"
-          >
-            Home
-          </Link>
+            <Typography color="text.primary" fontSize="20pt">Groups</Typography>
+          </Breadcrumbs>
+        </section>
 
-          <Typography color="text.primary" fontSize="20pt">Groups</Typography>
-        </Breadcrumbs>
-      </section>
-
-      <h1>All Groups</h1>
-      <Box sx={{ flexGrow: 1, p: 2 }}>
-        <Grid
-          container
-          spacing={2}>
-          {[...Array(12)].map((_, i) => (
-            <Grid
-            key={i}
-              {...{ xs: 6, sm: 6, md: 6, lg: 4 }}
-              minHeight={160}>
-              <GroupCard  {...{ title: 'Group:' + (i + 1), count: i + 1 }} />
-            </Grid>
-          ))}
-        </Grid>
-      </Box>
-
-    </>
-  )
+        <Container sx={{ flexGrow: 1, p: 2 }}>
+          <h1>All Groups</h1>
+          <Grid
+            container
+            spacing={2}>
+            {[...groupList].map((group) => (
+              <Grid
+                key={group.id}
+                {...{ xs: 12, sm: 6, md: 4, lg: 3 }}
+                minHeight={160}>
+                <GroupCard  {...{ title: group.name, id: group.id }} />
+              </Grid>
+            ))}
+          </Grid>
+        </Container>
+      </>
+    )
+  }
+  else{
+    return <Container><h1> Loading....</h1></Container>
+  }
 }
