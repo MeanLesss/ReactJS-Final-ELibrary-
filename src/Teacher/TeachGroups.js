@@ -34,7 +34,7 @@ export default function TeachGroups() {
           localStorage.setItem('students', JSON.stringify(data));
           setStudents(data);
         }
-        console.log(data);
+        // console.log(data);
       }).then(() => {
         if (localStorage.students != null) {
           //**********here need to navigate and save the student in localStorage */

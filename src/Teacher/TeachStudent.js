@@ -9,10 +9,6 @@ export default function TeachStudent() {
 
     const [students, setStudents] = useState(JSON.parse(localStorage.getItem('students')));
 
-    // useEffect(() => {
-    //     // DisplayContent();
-    // });
-
     console.log(students);
 
     //render the student list
@@ -30,7 +26,6 @@ export default function TeachStudent() {
                     <h1>No student found in this group</h1>
                 </Container>
             )
-
         }
     })
 
