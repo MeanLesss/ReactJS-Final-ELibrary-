@@ -77,6 +77,37 @@ export const GetStudents = async (info) => {
         .then(response => response.json())
         .then(result => { return result })
         .catch(error => console.log('error', error));
-        // console.log(res);
+    // console.log(res);
     return res;
 }
+export const GetSearchGroup = () => {
+
+}
+export const GetSearchStudent = () => {
+
+}
+
+export const GetBooks = async (info) => {
+    var formdata = new FormData();
+    formdata.append("api_token", process.env.REACT_APP_API_TOKEN);
+    formdata.append("user_token", info.token);
+    formdata.append("group_id", info.group_id);
+    formdata.append("search", info.search);
+    formdata.append("sort_order", info.sort);
+
+    var requestOptions = {
+        method: 'POST',
+        body: formdata,
+        redirect: 'follow'
+    };
+
+    var res = await fetch(process.env.REACT_APP_API_BOOKS, requestOptions)
+        .then(response => response.json())
+        .then(result => {return result})
+        .catch(error => console.log('error', error));
+        console.log(res);
+    return res;
+}
+//the download book link
+// {'http://172.104.166.110/FT_SD_M_11'+book.path+'?api_token='+process.env.REACT_APP_API_TOKEN+
+//                             '&user_token='+user.token}

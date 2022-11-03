@@ -32,7 +32,7 @@ export default function TeachGroups() {
       .then(data => {
         if (data.status === 'SUCCESS') {
           localStorage.setItem('students', JSON.stringify(data));
-          setStudents(data);
+          // setStudents(data);
         }
         // console.log(data);
       }).then(() => {
