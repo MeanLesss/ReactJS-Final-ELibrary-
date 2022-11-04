@@ -21,7 +21,9 @@ export default function TeachGroups() {
 
   useEffect(() => {
     localStorage.removeItem('students');
-    GetGroupList(userToken.token).then(data => setGroupList(data));
+    let groups = JSON.parse(localStorage.getItem('groups'));
+    setGroupList(groups)
+    // GetGroupList(userToken.token).then(data => setGroupList(data));
   }, [userToken.token])
   // console.log(groupList);
 
@@ -38,7 +40,7 @@ export default function TeachGroups() {
       }).then(() => {
         if (localStorage.students != null) {
           //**********here need to navigate and save the student in localStorage */
-          navigate('students', { replace: true })
+          navigate('students', {state:{group_name:props.group_name}, replace: true })
         }
       })
   }
@@ -64,7 +66,10 @@ export default function TeachGroups() {
           </Typography>
         </CardContent>
         <CardActions>
-          <Button size="/small" onClick={event => ShowStudent(event, { id: props.id, user_token: userToken })}>Show More</Button>
+          <Button size="/small" onClick={event => ShowStudent(event, 
+            { id: props.id,group_name:props.title , user_token: userToken })}>
+            Show More
+          </Button>
         </CardActions>
       </Card>
     )

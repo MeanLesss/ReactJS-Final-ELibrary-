@@ -11,10 +11,12 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import { useLocation } from 'react-router-dom';
 
 export default function TeachStudent() {
 
     const [students, setStudents] = useState(JSON.parse(localStorage.getItem('students')));
+    const location = useLocation();
     // const [ArrStudent, setArrStudent] = useState(students.students);
 
     // console.log(ArrStudent);
@@ -80,7 +82,9 @@ export default function TeachStudent() {
                         href="/teacher/groups">
                         Groups
                     </Link>
-                    <Typography color="text.primary" fontSize="20pt">Students</Typography>
+                    <Typography color="text.primary" fontSize="20pt">
+                        {location.state.group_name}
+                    </Typography>
                 </Breadcrumbs>
             </section>
             <DisplayContent />

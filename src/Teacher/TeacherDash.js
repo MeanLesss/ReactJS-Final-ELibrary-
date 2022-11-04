@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect } from 'react'
-import { GetSummary } from '../AuthServices';
+import { GetGroupList, GetSummary } from '../AuthServices';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -34,6 +34,8 @@ export default function TeacherDash() {
           setBooks('Error cannot find data');
         }
       })
+
+      GetGroupList(teacher.token).then(data => localStorage.setItem('groups',JSON.stringify(data)));
   }, [(process.env.REACT_APP_API_TOKEN), (teacher.token)]);
 
 
