@@ -87,7 +87,7 @@ export const GetSearchStudent = () => {
 
 }
 
-export const GetBooks = async (info) => {
+export const GetBooks =  async (info) => {
     var formdata = new FormData();
     formdata.append("api_token", process.env.REACT_APP_API_TOKEN);
     formdata.append("user_token", info.token);
@@ -105,7 +105,7 @@ export const GetBooks = async (info) => {
         .then(response => response.json())
         .then(result => {return result})
         .catch(error => console.log('error', error));
-        console.log(res);
+        // console.log(res);
     return res;
 }
 //the download book link

@@ -68,7 +68,7 @@ export default function TeachGroups() {
         <CardActions>
           <Button size="/small" onClick={event => ShowStudent(event, 
             { id: props.id,group_name:props.title , user_token: userToken })}>
-            Show More
+            Show Students
           </Button>
         </CardActions>
       </Card>

@@ -15,16 +15,23 @@ import { GetBooks } from '../AuthServices';
 
 
 export default function TeacherBooks() {
-
-  const [books, setBooks] = useState({ books: [{ id: 1, title: 'sdfsf',path:'/uploads/01-PHP_Web_Programming.pdf' }] });
+  // { books: [{ id: 1, title: 'sdfsf',path:'/uploads/01-PHP_Web_Programming.pdf' }] }
+  const [books, setBooks] = useState();
   const user = JSON.parse(localStorage.getItem('user'));
+  const groups = JSON.parse(localStorage.getItem('groups'));
 
+  // console.log(groups)
+  useEffect((event) => {
+    GetBooks({ token: user.token, group_id: groups[0].id, search: '', sort: 'asc' })
+      .then(data => {
+        if(data != undefined){
+          setBooks(data);
+        }
+      });
+    // setBooks(b);
+  },[user.token, groups[0].id ]);
+  console.log(books);
 
-  // useEffect(() => {
-  //   // GetBooks({ token: user.token,group_id: 1,search:'',sort:'asc'})
-  //   // .then(result => setBooks(result));
-  // });
-  // console.log(books);
   const DisplayContent = useCallback((event) => {
     if (books != null && books.books.length > 0) {
       return (
@@ -49,9 +56,9 @@ export default function TeacherBooks() {
                     </TableCell>
                     <TableCell align="center">{book.title}</TableCell>
                     <TableCell align="center">
-                      <a 
-                      href={'http://172.104.166.110/FT_SD_M_11'+book.path+'?api_token='+process.env.REACT_APP_API_TOKEN+
-                            '&user_token='+user.token}>
+                      <a
+                        href={'http://172.104.166.110/FT_SD_M_11' + book.path + '?api_token=' + process.env.REACT_APP_API_TOKEN +
+                          '&user_token=' + user.token}>
                         Download
                       </a>
                     </TableCell>
@@ -71,41 +78,77 @@ export default function TeacherBooks() {
     }
   })
 
-  return (
-    <>
-      <section id="breadCrumbs">
-        <Breadcrumbs aria-label="breadcrumb"
 
-          separator={<NavigateNextIcon fontSize="large" />}>
-          <Link
-            underline="hover"
-            key="2"
-            color="inherit"
-            href="/teacher/Dashboard"
-          >
-            Home
-          </Link>
+  if (books != null && books.books.length > 0) {
+    return (
+      <>
+        <section id="breadCrumbs">
+          <Breadcrumbs aria-label="breadcrumb"
 
-          <Typography color="text.primary" fontSize="20pt">Books</Typography>
-        </Breadcrumbs>
-      </section>
-      <Container>
+            separator={<NavigateNextIcon fontSize="large" />}>
+            <Link
+              underline="hover"
+              key="2"
+              color="inherit"
+              href="/teacher/Dashboard"
+            >
+              Home
+            </Link>
 
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <h1>
-            All Books
-          </h1>
-          <div>
-            This part should be a group DropDown
+            <Typography color="text.primary" fontSize="20pt">Books</Typography>
+          </Breadcrumbs>
+        </section>
+
+        <Container>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <h1>
+              All Books
+            </h1>
+            <div>
+              This part should be a group DropDown
+            </div>
           </div>
-        </div>
-        <div>
-          This part display book cars or <pre> {'<DisplayContent/>'} </pre>
-        </div>
+          <div>
+            This part display book cars or <pre> tksafhaskhs </pre>
+          </div>
 
-        <DisplayContent />
-      </Container>
+        </Container>
+        {/* <DisplayContent /> */}
+        <Container>
+          <h1>All Books</h1>
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell>ID</TableCell>
+                  <TableCell align="center">Title</TableCell>
+                  <TableCell align="center">Action</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {[...books.books].map((book) => (
+                  <TableRow
+                    key={book.id}
+                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                    <TableCell component="th" scope="row">
+                      {book.id}
+                    </TableCell>
+                    <TableCell align="center">{book.title}</TableCell>
+                    <TableCell align="center">
+                      <a
+                        href={'http://172.104.166.110/FT_SD_M_11' + book.path + '?api_token=' + process.env.REACT_APP_API_TOKEN +
+                          '&user_token=' + user.token}>
+                        Download
+                      </a>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Container>
 
-    </>
-  )
+      </>
+    )
+  }
 }
