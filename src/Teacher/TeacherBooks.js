@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, createRef } from 'react'
 import Link from '@mui/material/Link';
 import Container from '@mui/material/Container';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
@@ -14,9 +14,11 @@ import Paper from '@mui/material/Paper';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
+import TextField from '@mui/material/TextField';
 import Select from '@mui/material/Select';
 
 import { GetBooks } from '../AuthServices';
+import { display } from '@mui/system';
 
 
 export default function TeacherBooks() {
@@ -24,18 +26,18 @@ export default function TeacherBooks() {
   const [books, setBooks] = useState();
   const user = JSON.parse(localStorage.getItem('user'));
   const groups = JSON.parse(localStorage.getItem('groups'));
-
+  const [groupId, setGroupId] = useState(1);
   // console.log(groups)
   useEffect((event) => {
     GetBooks({ token: user.token, group_id: groups[0].id, search: '', sort: 'asc' })
-    .then(data => { setBooks(data); });
+      .then(data => { setBooks(data); });
   }, [user.token, groups[0].id]);
   // console.log(books);
-  const getBooks = useCallback((id) =>{
-    GetBooks({ token: user.token, group_id: id, search: '', sort: 'asc' })
+  const getBooks = useCallback((info) => {
+    GetBooks({ token: user.token, group_id: info.id, search: info.search, sort: 'asc' })
       .then(data => { setBooks(data); });
     // setBooks(b);
-  },[user.token]);
+  }, [user.token]);
 
   const DisplayContent = useCallback((event) => {
     if (books != null && books.books.length > 0) {
@@ -87,8 +89,9 @@ export default function TeacherBooks() {
   const DropDown = useCallback(() => {
 
     const handleChange = (event) => {
-      getBooks(event.target.value)
-      // console.log(event.target.value);ss
+      getBooks({ id: event.target.value, search: '' })
+      setGroupId(event.target.value);
+      // console.log(event.target.value);
     };
 
     // console.log(groups);
@@ -110,7 +113,7 @@ export default function TeacherBooks() {
         </div>
       );
     }
-  },[]);
+  }, []);
 
   // return the actuall interface
   return (
@@ -123,8 +126,7 @@ export default function TeacherBooks() {
             underline="hover"
             key="2"
             color="inherit"
-            href="/teacher/Dashboard"
-          >
+            href="/teacher/Dashboard">
             Home
           </Link>
 
@@ -145,7 +147,12 @@ export default function TeacherBooks() {
           This part display book cars or <pre> tksafhaskhs </pre>
         </div>
       </Container>
-      <DropDown />
+
+      <Container sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        <DropDown />
+        <TextField id="outlined-basic" label="Search book" variant="outlined"
+          onChange={(e) => { getBooks({ id: groupId, search: e.target.value }) }} />
+      </Container>
 
       <DisplayContent />
     </>
