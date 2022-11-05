@@ -11,6 +11,11 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+
 import { GetBooks } from '../AuthServices';
 
 
@@ -23,14 +28,14 @@ export default function TeacherBooks() {
   // console.log(groups)
   useEffect((event) => {
     GetBooks({ token: user.token, group_id: groups[0].id, search: '', sort: 'asc' })
-      .then(data => {
-        if(data != undefined){
-          setBooks(data);
-        }
-      });
+    .then(data => { setBooks(data); });
+  }, [user.token, groups[0].id]);
+  // console.log(books);
+  const getBooks = useCallback((id) =>{
+    GetBooks({ token: user.token, group_id: id, search: '', sort: 'asc' })
+      .then(data => { setBooks(data); });
     // setBooks(b);
-  },[user.token, groups[0].id ]);
-  console.log(books);
+  },[user.token]);
 
   const DisplayContent = useCallback((event) => {
     if (books != null && books.books.length > 0) {
@@ -78,77 +83,72 @@ export default function TeacherBooks() {
     }
   })
 
+  //DropDown Groups
+  const DropDown = useCallback(() => {
 
-  if (books != null && books.books.length > 0) {
-    return (
-      <>
-        <section id="breadCrumbs">
-          <Breadcrumbs aria-label="breadcrumb"
+    const handleChange = (event) => {
+      getBooks(event.target.value)
+      // console.log(event.target.value);ss
+    };
 
-            separator={<NavigateNextIcon fontSize="large" />}>
-            <Link
-              underline="hover"
-              key="2"
-              color="inherit"
-              href="/teacher/Dashboard"
-            >
-              Home
-            </Link>
+    // console.log(groups);
+    if (groups) {
+      return (
+        <div>
+          <FormControl sx={{ m: 1, minWidth: 300 }}>
+            <InputLabel id="demo-simple-select-autowidth-label">Groups</InputLabel>
+            <Select onChange={handleChange} defaultValue={1} id="grouped-select" label="Grouping">
+              {groups.map((g) => {
+                return (
+                  <MenuItem key={g.id} value={g.id}>
+                    {g.name}
+                  </MenuItem>
+                )
+              })}
+            </Select>
+          </FormControl>
+        </div>
+      );
+    }
+  },[]);
 
-            <Typography color="text.primary" fontSize="20pt">Books</Typography>
-          </Breadcrumbs>
-        </section>
+  // return the actuall interface
+  return (
+    <>
+      <section id="breadCrumbs">
+        <Breadcrumbs aria-label="breadcrumb"
 
-        <Container>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <h1>
-              All Books
-            </h1>
-            <div>
-              This part should be a group DropDown
-            </div>
-          </div>
+          separator={<NavigateNextIcon fontSize="large" />}>
+          <Link
+            underline="hover"
+            key="2"
+            color="inherit"
+            href="/teacher/Dashboard"
+          >
+            Home
+          </Link>
+
+          <Typography color="text.primary" fontSize="20pt">Books</Typography>
+        </Breadcrumbs>
+      </section>
+
+      <Container>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <h1>
+            All Books
+          </h1>
           <div>
-            This part display book cars or <pre> tksafhaskhs </pre>
+            This part should be a group DropDown
           </div>
+        </div>
+        <div>
+          This part display book cars or <pre> tksafhaskhs </pre>
+        </div>
+      </Container>
+      <DropDown />
 
-        </Container>
-        {/* <DisplayContent /> */}
-        <Container>
-          <h1>All Books</h1>
-          <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell>ID</TableCell>
-                  <TableCell align="center">Title</TableCell>
-                  <TableCell align="center">Action</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {[...books.books].map((book) => (
-                  <TableRow
-                    key={book.id}
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                    <TableCell component="th" scope="row">
-                      {book.id}
-                    </TableCell>
-                    <TableCell align="center">{book.title}</TableCell>
-                    <TableCell align="center">
-                      <a
-                        href={'http://172.104.166.110/FT_SD_M_11' + book.path + '?api_token=' + process.env.REACT_APP_API_TOKEN +
-                          '&user_token=' + user.token}>
-                        Download
-                      </a>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Container>
-
-      </>
-    )
-  }
+      <DisplayContent />
+    </>
+  )
 }
+
