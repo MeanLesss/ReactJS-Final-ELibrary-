@@ -1,4 +1,4 @@
-import React, { useCallback, useState ,useEffect } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import MenuItem from '@mui/material/MenuItem';
 import Avatar from '@mui/material/Avatar';
@@ -17,6 +17,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import CloseIcon from '@mui/icons-material/Close';
 import './Layout.css'
 
 export default function Layout() {
@@ -26,8 +27,8 @@ export default function Layout() {
     localStorage.clear();
     navigate('/', { replace: true });
   })
-  const info = JSON.parse(localStorage.getItem('user'))
-  const [name, setName] = React.useState(info.user.username);
+  const user = JSON.parse(localStorage.getItem('user'))
+  const [name, setName] = React.useState(user.user.username);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -37,31 +38,52 @@ export default function Layout() {
     setAnchorEl(null);
   };
 
-    const [openDialog, setOpenDialog] = React.useState(false);
-  
-    const handleClickOpen = () => {
-      setOpenDialog(true);
-    };
-  
-    const handleCloseDialog = () => {
-      setOpenDialog(false);
-    };
-  const FormDialog = ()=> {
+  const [openDialog, setOpenDialog] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+  //Display profile popUp
+  const ProfileDialog = () => {
 
     return (
       <div>
-        <Button variant="outlined" onClick={handleClickOpen}>
-          Open form dialog
-        </Button>
-        <Dialog open={openDialog} onClose={handleClose}>
-          <DialogTitle>Subscribe</DialogTitle>
+        <Dialog
+          open={openDialog}
+          onClose={handleClose}
+          fullWidth
+          maxWidth = 'xl'
+          scroll={'paper'}>
+          <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            Profile
+            <DialogActions>
+              <CloseIcon onClick={handleCloseDialog}>Close</CloseIcon>
+            </DialogActions>
+          </DialogTitle>
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <Avatar
+              id="avatar"
+              sx={{
+                width: 120,
+                height: 120,
+                fontSize: 70,
+                backgroundColor: '#777',
+                border: '3px solid lime'
+              }}>
+              {name[0]}
+            </Avatar>
+          </div>
           <DialogContent>
             <DialogContentText>
               To subscribe to this website, please enter your email address here. We
               will send updates occasionally.
             </DialogContentText>
             <TextField
-              autoFocus
+              disabled
               margin="dense"
               id="name"
               label="Email Address"
@@ -70,10 +92,7 @@ export default function Layout() {
               variant="standard"
             />
           </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseDialog}>Cancel</Button>
-            <Button onClick={handleCloseDialog}>Subscribe</Button>
-          </DialogActions>
+
         </Dialog>
       </div>
     );
@@ -95,16 +114,15 @@ export default function Layout() {
                 sx={{ ml: 2 }}
                 aria-controls={open ? 'account-menu' : undefined}
                 aria-haspopup="true"
-                aria-expanded={open ? 'true' : undefined}
-              >
-                <Avatar 
-                  id="avatar" 
+                aria-expanded={open ? 'true' : undefined}>
+                <Avatar
+                  id="avatar"
                   sx={{
-                  width: 40,
-                  height: 40,
-                  backgroundColor: '#777',
-                  border:'3px solid lime'
-                }}>
+                    width: 40,
+                    height: 40,
+                    backgroundColor: '#777',
+                    border: '3px solid lime'
+                  }}>
                   {name[0]}
                 </Avatar>
               </IconButton>
@@ -147,7 +165,7 @@ export default function Layout() {
           }}
           transformOrigin={{ horizontal: 'right', vertical: 'top' }}
           anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}>
-            <MenuItem onClick={handleClickOpen}>
+          <MenuItem onClick={handleClickOpen}>
             <Avatar /> Profile
           </MenuItem>
           <Divider />
@@ -168,7 +186,7 @@ export default function Layout() {
         {/* <button onClick={DoLogout}>Log out</button> */}
 
       </div>
-      <FormDialog/>
+      <ProfileDialog />
       <Outlet />
     </>
   )
