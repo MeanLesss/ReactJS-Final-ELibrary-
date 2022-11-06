@@ -87,7 +87,7 @@ export const GetSearchStudent = () => {
 
 }
 
-export const GetBooks =  async (info) => {
+export const GetBooks = async (info) => {
     var formdata = new FormData();
     formdata.append("api_token", process.env.REACT_APP_API_TOKEN);
     formdata.append("user_token", info.token);
@@ -103,11 +103,30 @@ export const GetBooks =  async (info) => {
 
     var res = await fetch(process.env.REACT_APP_API_BOOKS, requestOptions)
         .then(response => response.json())
-        .then(result => {return result})
+        .then(result => { return result })
         .catch(error => console.log('error', error));
-        // console.log(res);
+    // console.log(res);
     return res;
 }
 //the download book link
 // {'http://172.104.166.110/FT_SD_M_11'+book.path+'?api_token='+process.env.REACT_APP_API_TOKEN+
 //                             '&user_token='+user.token}
+
+export const GetProfile = async (info) => {
+    var formdata = new FormData();
+    formdata.append("api_token", "api_634f58d8b0ff2");
+    formdata.append("user_token", "tea_636724a82060f");
+
+    var requestOptions = {
+        method: 'POST',
+        body: formdata,
+        redirect: 'follow'
+    };
+
+    var res = await fetch("http://172.104.166.110/FT_SD_M_11/api/profile.php", requestOptions)
+        .then(response => response.json())
+        .then(result => {return result})    
+        .catch(error => console.log('error', error));
+
+    return res;
+}

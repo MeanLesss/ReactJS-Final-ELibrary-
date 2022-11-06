@@ -10,7 +10,15 @@ import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 import './Layout.css'
+
 export default function Layout() {
   const navigate = useNavigate();
   const DoLogout = useCallback((e) => {
@@ -29,7 +37,49 @@ export default function Layout() {
     setAnchorEl(null);
   };
 
+    const [openDialog, setOpenDialog] = React.useState(false);
+  
+    const handleClickOpen = () => {
+      setOpenDialog(true);
+    };
+  
+    const handleCloseDialog = () => {
+      setOpenDialog(false);
+    };
+  const FormDialog = ()=> {
 
+    return (
+      <div>
+        <Button variant="outlined" onClick={handleClickOpen}>
+          Open form dialog
+        </Button>
+        <Dialog open={openDialog} onClose={handleClose}>
+          <DialogTitle>Subscribe</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              To subscribe to this website, please enter your email address here. We
+              will send updates occasionally.
+            </DialogContentText>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Email Address"
+              type="email"
+              fullWidth
+              variant="standard"
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog}>Cancel</Button>
+            <Button onClick={handleCloseDialog}>Subscribe</Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+    );
+  }
+
+  // return the main page
   return (
     <>
       <div>
@@ -96,21 +146,11 @@ export default function Layout() {
             },
           }}
           transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-        >
-          <MenuItem>
+          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}>
+            <MenuItem onClick={handleClickOpen}>
             <Avatar /> Profile
           </MenuItem>
-          {/* <MenuItem>
-            <Avatar /> My account
-          </MenuItem> */}
           <Divider />
-          {/* <MenuItem>
-            <ListItemIcon>
-              <PersonAdd fontSize="small" />
-            </ListItemIcon>
-            Add another account
-          </MenuItem> */}
           <MenuItem>
             <ListItemIcon>
               <Settings fontSize="small" />
@@ -128,6 +168,7 @@ export default function Layout() {
         {/* <button onClick={DoLogout}>Log out</button> */}
 
       </div>
+      <FormDialog/>
       <Outlet />
     </>
   )

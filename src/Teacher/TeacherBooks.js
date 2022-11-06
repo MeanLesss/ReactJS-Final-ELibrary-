@@ -18,7 +18,6 @@ import TextField from '@mui/material/TextField';
 import Select from '@mui/material/Select';
 
 import { GetBooks } from '../AuthServices';
-import { display } from '@mui/system';
 
 
 export default function TeacherBooks() {
@@ -63,8 +62,7 @@ export default function TeacherBooks() {
                     </TableCell>
                     <TableCell align="center">{book.title}</TableCell>
                     <TableCell align="center">
-                      <a
-                        href={'http://172.104.166.110/FT_SD_M_11' + book.path + '?api_token=' + process.env.REACT_APP_API_TOKEN +
+                      <a href={'http://172.104.166.110/FT_SD_M_11' + book.path + '?api_token=' + process.env.REACT_APP_API_TOKEN +
                           '&user_token=' + user.token}>
                         Download
                       </a>
@@ -97,7 +95,7 @@ export default function TeacherBooks() {
     // console.log(groups);
     if (groups) {
       return (
-        <div>
+        <>
           <FormControl sx={{ m: 1, minWidth: 300 }}>
             <InputLabel id="demo-simple-select-autowidth-label">Groups</InputLabel>
             <Select onChange={handleChange} defaultValue={1} id="grouped-select" label="Grouping">
@@ -110,7 +108,7 @@ export default function TeacherBooks() {
               })}
             </Select>
           </FormControl>
-        </div>
+        </>
       );
     }
   }, []);
@@ -133,20 +131,6 @@ export default function TeacherBooks() {
           <Typography color="text.primary" fontSize="20pt">Books</Typography>
         </Breadcrumbs>
       </section>
-
-      <Container>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <h1>
-            All Books
-          </h1>
-          <div>
-            This part should be a group DropDown
-          </div>
-        </div>
-        <div>
-          This part display book cars or <pre> tksafhaskhs </pre>
-        </div>
-      </Container>
 
       <Container sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <DropDown />
