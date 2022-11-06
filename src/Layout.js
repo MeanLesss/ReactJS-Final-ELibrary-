@@ -64,10 +64,12 @@ export default function Layout() {
               <CloseIcon onClick={handleCloseDialog}>Close</CloseIcon>
             </DialogActions>
           </DialogTitle>
-          <div style={{ display: "flex", justifyContent: "center" }}>
+          {/* for the profile pic */}
+          <DialogContent sx={{ display: "flex", justifyContent: "center" }}>
             <Avatar
               id="avatar"
               sx={{
+                margin:1,
                 width: 120,
                 height: 120,
                 fontSize: 70,
@@ -76,11 +78,11 @@ export default function Layout() {
               }}>
               {name[0]}
             </Avatar>
-          </div>
+          </DialogContent>
+          {/* For inputs we need to use grid */}
           <DialogContent>
             <DialogContentText>
-              To subscribe to this website, please enter your email address here. We
-              will send updates occasionally.
+              Username
             </DialogContentText>
             <TextField
               disabled
