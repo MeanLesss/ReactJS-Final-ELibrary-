@@ -11,6 +11,7 @@ import Logout from '@mui/icons-material/Logout';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -18,16 +19,21 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import CloseIcon from '@mui/icons-material/Close';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import { GetGroupList } from '../src/AuthServices';
+
 import './Layout.css'
 
 export default function Layout() {
   const navigate = useNavigate();
-  const DoLogout = useCallback((e) => {
-    e.preventDefault();
-    localStorage.clear();
-    navigate('/', { replace: true });
-  })
-  const user = JSON.parse(localStorage.getItem('user'))
+  const user = JSON.parse(localStorage.getItem('user'));
+  const groups = JSON.parse(localStorage.getItem('groups'));
   const [name, setName] = React.useState(user.user.username);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -47,57 +53,116 @@ export default function Layout() {
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
+  const DoLogout = useCallback((e) => {
+    e.preventDefault();
+    localStorage.clear();
+    navigate('/', { replace: true });
+  })
+  useEffect(() => {
+    GetGroupList(user.token).then(data => localStorage.setItem('groups', JSON.stringify(data)));
+  }, [user.token])
   //Display profile popUp
   const ProfileDialog = () => {
-
-    return (
+    if (groups) {
+      return (
+        <div>
+          <Dialog
+            open={openDialog}
+            onClose={handleClose}
+            fullWidth
+            maxWidth='sm'
+            scroll={'paper'}>
+            <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              Profile
+              <DialogActions>
+                <CloseIcon onClick={handleCloseDialog}>Close</CloseIcon>
+              </DialogActions>
+            </DialogTitle>
+            {/* for the profile pic */}
+            <DialogContent sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+            }}>
+              <Avatar
+                id="avatar"
+                sx={{
+                  margin: 1,
+                  width: 120,
+                  height: 120,
+                  fontSize: 70,
+                  backgroundColor: '#777',
+                  border: '3px solid lime'
+                }}>
+                {name[0]}
+              </Avatar>
+              <DialogContentText>
+                ID: {user.user.id}
+              </DialogContentText>
+         
+              
+              <TextField
+                // disabled
+                defaultValue={user.user.username}
+                margin="dense"
+                id="username"
+                label="Username"
+                type="text"
+                fullWidth
+                variant="outlined" />
+              <TextField
+                disabled
+                value={user.user.role}
+                margin="dense"
+                id="role"
+                label="Role"
+                type="text"
+                fullWidth
+                variant="outlined" />
+              <TextField
+                disabled
+                value={user.token}
+                margin="dense"
+                id="token"
+                label="Token"
+                type="text"
+                fullWidth
+                variant="outlined" />
+              {/* table Display groups */}
+              <h3>Teaching Groups</h3>
+              <TableContainer component={Paper}>
+                <Table sx={{ maxWidth: 650 }} aria-label="simple table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>ID</TableCell>
+                      <TableCell align="center">Group Name</TableCell>
+                      {/* <TableCell align="center">Action</TableCell> */}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {[...groups].map((group) => (
+                      <TableRow
+                        key={group.id}
+                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                        <TableCell component="th" scope="row">
+                          {group.id}
+                        </TableCell>
+                        <TableCell align="center">{group.name}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </DialogContent>
+            <Button >Save</Button>
+          </Dialog>
+        </div>
+      );
+    } else {
       <div>
-        <Dialog
-          open={openDialog}
-          onClose={handleClose}
-          fullWidth
-          maxWidth = 'xl'
-          scroll={'paper'}>
-          <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            Profile
-            <DialogActions>
-              <CloseIcon onClick={handleCloseDialog}>Close</CloseIcon>
-            </DialogActions>
-          </DialogTitle>
-          {/* for the profile pic */}
-          <DialogContent sx={{ display: "flex", justifyContent: "center" }}>
-            <Avatar
-              id="avatar"
-              sx={{
-                margin:1,
-                width: 120,
-                height: 120,
-                fontSize: 70,
-                backgroundColor: '#777',
-                border: '3px solid lime'
-              }}>
-              {name[0]}
-            </Avatar>
-          </DialogContent>
-          {/* For inputs we need to use grid */}
-          <DialogContent>
-            <DialogContentText>
-              Username
-            </DialogContentText>
-            <TextField
-              disabled
-              margin="dense"
-              id="name"
-              label="Email Address"
-              type="email"
-              fullWidth
-              variant="standard"
-            />
-          </DialogContent>
-
-        </Dialog>
+        No group found!
       </div>
-    );
+    }
   }
 
   // return the main page

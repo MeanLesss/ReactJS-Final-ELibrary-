@@ -76,7 +76,11 @@ export default function LogIn() {
             color="success"
           />
           <br /><br />
-          <Button id="subBut" type="submit" variant="contained" color="success" endIcon={<LoginIcon />}>
+          <Button id="subBut" 
+          type="submit" 
+          variant="contained" 
+          color="success" 
+          endIcon={<LoginIcon />}>
             Log in
           </Button>
         </form>
