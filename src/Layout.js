@@ -236,12 +236,12 @@ export default function Layout() {
             <Avatar /> Profile
           </MenuItem>
           <Divider />
-          <MenuItem>
+          {/* <MenuItem>
             <ListItemIcon>
               <Settings fontSize="small" />
             </ListItemIcon>
             Settings
-          </MenuItem>
+          </MenuItem> */}
 
           <MenuItem onClick={DoLogout}>
             <ListItemIcon>
