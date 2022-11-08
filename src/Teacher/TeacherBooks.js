@@ -16,6 +16,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField';
 import Select from '@mui/material/Select';
+import Grid from '@mui/material/Unstable_Grid2';
 
 import { GetBooks } from '../AuthServices';
 
@@ -63,7 +64,7 @@ export default function TeacherBooks() {
                     <TableCell align="center">{book.title}</TableCell>
                     <TableCell align="center">
                       <a href={'http://172.104.166.110/FT_SD_M_11' + book.path + '?api_token=' + process.env.REACT_APP_API_TOKEN +
-                          '&user_token=' + user.token}>
+                        '&user_token=' + user.token}>
                         Download
                       </a>
                     </TableCell>
@@ -131,11 +132,18 @@ export default function TeacherBooks() {
           <Typography color="text.primary" fontSize="20pt">Books</Typography>
         </Breadcrumbs>
       </section>
-
-      <Container sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <DropDown />
-        <TextField id="outlined-basic" label="Search book" variant="outlined"
-          onChange={(e) => { getBooks({ id: groupId, search: e.target.value }) }} />
+{/* sx={{ display: 'flex', justifyContent: 'space-between' }} */}
+      <Container sx = {{alignItems:'center'}}>
+        <Grid container
+          spacing={2}>
+          <Grid {...{ xs: 12, sm: 12, md: 9, lg: 9 }}>
+            <DropDown />
+          </Grid>
+          <Grid {...{ xs: 12, sm: 12, md: 3, lg: 3}}>
+            <TextField id="outlined-basic" label="Search book" variant="outlined"
+              onChange={(e) => { getBooks({ id: groupId, search: e.target.value }) }} />
+          </Grid>
+        </Grid>
       </Container>
 
       <DisplayContent />

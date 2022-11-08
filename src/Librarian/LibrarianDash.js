@@ -39,6 +39,9 @@ export default function LibrarianDash() {
         } else {
           setGroups('Error cannot find data');
           setBooks('Error cannot find data');
+          setStudents('Error cannot find data');
+          setTeachers('Error cannot find data');
+          setDownloads('Error cannot find data');
         }
       })
 
@@ -49,12 +52,13 @@ export default function LibrarianDash() {
 
   // console.log(summary);
   const DisplayCard = useCallback((props) => {
-    let link;
-    if (props.title.includes('groups')) {
-      link = '/librarian/groups'
-    } else {
-      link = '/librarian/books'
-    }
+    let link = `/librarian/${props.title}`;
+
+    // if (props.title.includes('groups')) {
+    //   link = '/librarian/groups'
+    // } else {
+    //   link = '/librarian/books'
+    // }
     return (
       <Grid {...{ xs: 12, sm: 6, md: 6, lg: 6 }}
         minHeight={160} >
@@ -78,19 +82,30 @@ export default function LibrarianDash() {
   //render the interface
   return (
     <>
-      <div>LibrarianDash</div>
+      {/* <div>LibrarianDash</div> */}
+      <section id="breadCrumbs">
+        <Breadcrumbs aria-label="breadcrumb"
+
+          separator={<NavigateNextIcon fontSize="large" />}>
+          <Typography color="text.primary">...</Typography>
+
+          <Typography color="text.primary" fontSize="20pt">Dashboard</Typography>
+        </Breadcrumbs>
+      </section>
       <div id="sum-wrapper">
-        <Box sx={{ flexGrow: 1, p: 2 }}>
-          <Grid container
-            spacing={2}>
-            <DisplayCard  {...{ title: 'Books', count: Books }} />
-            <DisplayCard  {...{ title: 'Groups', count: Groups }} />
-            <DisplayCard  {...{ title: 'Students', count: Students }} />
-            <DisplayCard  {...{ title: 'Teachers', count: Teachers }} />
-            <DisplayCard  {...{ title: 'Downlods', count: Downloads }} />
-          </Grid>
-        </Box>
-        <Outlet />
+        <Container>
+          <Box sx={{ flexGrow: 1, p: 2 }}>
+            <Grid container
+              spacing={2}>
+              <DisplayCard  {...{ title: 'Books', count: Books }} />
+              <DisplayCard  {...{ title: 'Groups', count: Groups }} />
+              <DisplayCard  {...{ title: 'Students', count: Students }} />
+              <DisplayCard  {...{ title: 'Teachers', count: Teachers }} />
+              <DisplayCard  {...{ title: 'Downloads', count: Downloads }} />
+            </Grid>
+          </Box>
+          <Outlet />
+        </Container>
       </div>
     </>
   )

@@ -60,7 +60,6 @@
 @media only screen and (max-width:500px) {
     #navBar h1 {
         padding: 10px 0px;
-        visibility:collapse;
     }
     #navBar{
         padding: 0;

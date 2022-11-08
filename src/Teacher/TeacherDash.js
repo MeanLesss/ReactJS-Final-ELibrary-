@@ -10,6 +10,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import Container from '@mui/material/Container';
 import { Outlet, useNavigate } from 'react-router-dom';
 import '../Teacher/Teacher.css'
 
@@ -80,11 +81,12 @@ export default function TeacherDash() {
       </section>
 
       <div id="sum-wrapper">
+        <Container>
+
         <Box sx={{ flexGrow: 1, p: 2 }}>
           <Grid
             container
-            spacing={2}
-          >
+            spacing={2}>
             <Grid
               {...{ xs: 12, sm: 6, md: 6, lg: 6 }}
               minHeight={160}>
@@ -97,6 +99,8 @@ export default function TeacherDash() {
             </Grid>
           </Grid>
         </Box>
+        
+        </Container>
       </div>
       <Outlet />
     </>
