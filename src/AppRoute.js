@@ -38,7 +38,7 @@ export default function AppRoute() {
                 </Route>
             </Route>
             
-            <Route path='librarian' element={<Layout />}>
+            <Route path='librarian/dashboard' element={<Layout />}>
                 <Route index element={<LibrarianDash />}></Route>
             </Route>
             <Route path='*' element={<h1>Not Found!</h1>}></Route>

@@ -99,8 +99,8 @@ export default function Layout() {
               <DialogContentText>
                 ID: {user.user.id}
               </DialogContentText>
-         
-              
+
+
               <TextField
                 // disabled
                 defaultValue={user.user.username}
@@ -168,10 +168,10 @@ export default function Layout() {
   // return the main page
   return (
     <>
-      <div>
         {/* this part should have nav bar */}
         <div id="navBar">
           <h1>MyStat Library 📖</h1>
+
           <div id="userInfo">
             <label>{name}</label>
             <Tooltip title="Account settings">
@@ -252,7 +252,6 @@ export default function Layout() {
         </Menu>
         {/* <button onClick={DoLogout}>Log out</button> */}
 
-      </div>
       <ProfileDialog />
       <Outlet />
     </>
