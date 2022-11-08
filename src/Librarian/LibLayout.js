@@ -11,7 +11,7 @@ import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 
 export default function LibLayout() {
-    const pages = ['Dashboard', 'Groups', 'Books', 'Students','Teachers'];
+    const pages = ['Dashboard', 'Groups', 'Books', 'Users'];
 
     const ResponsiveAppBar = () => {
         const navigate = useNavigate();

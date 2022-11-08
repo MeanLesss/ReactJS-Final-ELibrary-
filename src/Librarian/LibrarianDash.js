@@ -45,7 +45,7 @@ export default function LibrarianDash() {
         }
       })
 
-  }, [(process.env.REACT_APP_API_TOKEN),]);
+  }, [(process.env.REACT_APP_API_TOKEN),user.token]);
   const ShowMore = (e, navLink) => {
     navigate(navLink, { replace: true });
   }
@@ -54,11 +54,6 @@ export default function LibrarianDash() {
   const DisplayCard = useCallback((props) => {
     let link = `/librarian/${props.title}`;
 
-    // if (props.title.includes('groups')) {
-    //   link = '/librarian/groups'
-    // } else {
-    //   link = '/librarian/books'
-    // }
     return (
       <Grid {...{ xs: 12, sm: 6, md: 6, lg: 6 }}
         minHeight={160} >

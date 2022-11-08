@@ -2,8 +2,10 @@ import React from 'react'
 import { Routes, Route } from 'react-router-dom'
 import LogIn from './App'
 import Layout from './Layout'
+import LibGroups from './Librarian/LibGroups'
 import LibLayout from './Librarian/LibLayout'
 import LibrarianDash from './Librarian/LibrarianDash'
+import LibUsers from './Librarian/LibUsers'
 import TeacherBooks from './Teacher/TeacherBooks'
 import TeacherDash from './Teacher/TeacherDash'
 import TeacherLayout from './Teacher/TeacherLayout'
@@ -49,7 +51,7 @@ export default function AppRoute() {
 
             <Route path='librarian/groups' element={<Layout />}>
                 <Route element={<LibLayout/>}>
-                    <Route index element={<h1>grouops</h1>}></Route>
+                    <Route index element={<LibGroups/>}></Route>
                 </Route>
             </Route>
             <Route path='librarian/books' element={<Layout />}>
@@ -59,7 +61,7 @@ export default function AppRoute() {
             </Route>
             <Route path='librarian/students' element={<Layout />}>
                 <Route element={<LibLayout/>}>
-                    <Route index element={<h1>student</h1>}></Route>
+                    <Route index element={<LibUsers/>}></Route>
                 </Route>
             </Route>
             <Route path='librarian/teachers' element={<Layout />}>
