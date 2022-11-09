@@ -3,6 +3,7 @@ import Container from '@mui/material/Container';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import Typography from '@mui/material/Typography';
+import Avatar from '@mui/material/Avatar';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -18,6 +19,13 @@ import Select from '@mui/material/Select';
 import EditIcon from '@mui/icons-material/Edit';
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
+import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import CloseIcon from '@mui/icons-material/Close';
 import { GetUsers } from '../AuthServices'
 
 export default function LibUsers() {
@@ -25,10 +33,24 @@ export default function LibUsers() {
     const group_count = JSON.parse(localStorage.getItem('groupCount'))
     const [users, setUsers] = useState();
     const [groupId, setGroupId] = useState(1);
+    const [groupIdAdd, setGroupIdAdd] = useState(1);
     const [search, setSearch] = useState('');
     const [role, setRole] = useState('Student');
+    const [roleAdd, setRoleAdd] = useState('');
     const roles = ['Student', 'Teacher', 'Librarian']
+    const [openDialog, setOpenDialog] = useState(false);
+    const [anchorEl, setAnchorEl] = useState(null);
 
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+    const handleClickOpen = () => {
+        setOpenDialog(true);
+    };
+
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+    };
     useEffect(() => {
         const controller = new AbortController();
         GetUsers({
@@ -90,16 +112,16 @@ export default function LibUsers() {
         } else {
             return (
                 <Container>
-                    <h1>No book found in this group</h1>
+                    <h1>No user found in this group</h1>
                 </Container>
             )
         }
     })
-
+    //this drop down is for the sort user part
     const RoleDropDown = () => {
         const handleChange = (event) => {
+            event.preventDefault();
             setRole(event.target.value);
-            // console.log(role);
         };
         // defaultValue={'Student'}
         return (
@@ -117,9 +139,32 @@ export default function LibUsers() {
             </FormControl>
         )
     }
+    //this drop down is for the add user part
+    const RoleAddDropDown = () => {
+        const handleChange = (event) => {
+            setRoleAdd(event.target.value);
+        };
+        // defaultValue={'Student'}
+        return (
+            // <FormControl sx={{ m: 1, minWidth: 200 }}>
+            <>
+                <InputLabel id="demo-simple-select-autowidth-label">Roles</InputLabel>
+                <Select onChange={(event)=>{handleChange(event)}} value={roleAdd} id="grouped-select" label="Role" >
+                    {roles.map((g, i) => {
+                        return (
+                            <MenuItem key={i} value={g}>
+                                {g}
+                            </MenuItem>
+                        )
+                    })}
+                </Select>
+            </>
+        )
+    }
 
     const GroupDropDown = () => {
         const handleChange = (event) => {
+            event.preventDefault();
             setGroupId(event.target.value);
             // console.log(groupId);
         };
@@ -138,20 +183,109 @@ export default function LibUsers() {
             </FormControl>
         )
     }
+    const GroupAddDropDown = () => {
+        const handleChange = (event) => {
+            event.preventDefault();
+            setGroupIdAdd(event.target.value);
+            // console.log(groupId);
+        };
+        return (
+            // <FormControl sx={{ m: 1, minWidth: 200 }}>
+            <>
+                <InputLabel id="demo-simple-select-autowidth-label">Group ID</InputLabel>
+                <Select onChange={(e) => { handleChange(e) }} value={groupIdAdd} id="grouped-select" label="Group ID">
+                    {[...Array(group_count)].map((_, i) => {
+                        return (
+                            <MenuItem key={i} value={i + 1}>
+                                {i + 1}
+                            </MenuItem>
+                        )
+                    })}
+                </Select>
+                {/* </FormControl> */}
+            </>
+        )
+    }
 
+    const AddUserDialog = (info) => {
+        return (
+            <div>
+                <Dialog
+                    open={openDialog}
+                    onClose={handleClose}
+                    fullWidth
+                    maxWidth='sm'
+                    scroll={'paper'}>
+                    <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        Add User
+                        <DialogActions>
+                            <CloseIcon onClick={handleCloseDialog}>Close</CloseIcon>
+                        </DialogActions>
+                    </DialogTitle>
+                    {/* for the profile pic */}
+                    <DialogContent sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center"
+                    }}>
+                        <RoleAddDropDown />
+                        <GroupAddDropDown />
 
-    //render the actual display getBooks({ id: groupId, search: e.target.value })
+                        <TextField
+                            // disabled
+                            defaultValue={info.username}
+                            margin="dense"
+                            id="username"
+                            label="Username"
+                            type="text"
+                            fullWidth
+                            variant="outlined" />
+                        <TextField
+                            // disabled
+                            defaultValue={info.pwd}
+                            margin="dense"
+                            label="Password"
+                            type="password"
+                            fullWidth
+                            variant="outlined" />
+                        <TextField
+                            // disabled
+                            defaultValue={info.forward_addr}
+                            margin="dense"
+                            label="Forward Address"
+                            type="text"
+                            fullWidth
+                            variant="outlined" />
+                        <TextField
+                            // disabled
+                            defaultValue={info.remote_addr}
+                            margin="dense"
+                            label="Remote Address"
+                            type="text"
+                            fullWidth
+                            variant="outlined" />
+                    </DialogContent>
+                    <Button >Save</Button>
+                </Dialog>
+            </div>
+        );
+    }
+
+    //render the actual display
     return (
         <>
             <Container>
                 <h1>Manage Users</h1>
-                    <RoleDropDown />
-                    <GroupDropDown />
-                    <TextField id="outlined-basic" label="Search user" variant="outlined"
-                    sx={{marginTop:1}}
-                        onChange={(e) => { setSearch(e.target.value)}} />
+                <RoleDropDown {...{ add: false }} />
+                <GroupDropDown />
+                <TextField id="outlined-basic" label="Search user" variant="outlined"
+                    sx={{ marginTop: 1 }}
+                    onChange={(e) => { setSearch(e.target.value) }} />
+                <Button color="success" variant="outlined" onClick={handleClickOpen}
+                    sx={{ height: 55, marginTop: 1, marginLeft: 1 }}>Add User <PersonAddAltIcon /></Button>
                 <DisplayContent />
             </Container>
+            <AddUserDialog />
         </>
     )
 }
