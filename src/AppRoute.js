@@ -59,7 +59,7 @@ export default function AppRoute() {
                     <Route index element={<h1>books</h1>}></Route>
                 </Route>
             </Route>
-            <Route path='librarian/students' element={<Layout />}>
+            <Route path='librarian/users' element={<Layout />}>
                 <Route element={<LibLayout/>}>
                     <Route index element={<LibUsers/>}></Route>
                 </Route>

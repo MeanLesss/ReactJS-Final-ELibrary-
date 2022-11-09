@@ -22,6 +22,7 @@ import { GetUsers } from '../AuthServices'
 
 export default function LibUsers() {
     const user = JSON.parse(localStorage.getItem('user'));
+    const group_count = JSON.parse(localStorage.getItem('groupCount'))
     const [users, setUsers] = useState();
     const [groupId, setGroupId] = useState(1);
     const [search, setSearch] = useState('');
@@ -39,7 +40,8 @@ export default function LibUsers() {
             controller.abort();
         }
     }, [user.token, groupId, search, role])
-    console.log(users);
+    // console.log(users);
+    // console.log(group_count);
 
     //Component
     const DisplayContent = useCallback((event) => {
@@ -96,15 +98,14 @@ export default function LibUsers() {
 
     const RoleDropDown = () => {
         const handleChange = (event) => {
-            // getBooks({ id: event.target.value, search: '' })
             setRole(event.target.value);
-            // console.log(event.target.value);
+            // console.log(role);
         };
+        // defaultValue={'Student'}
         return (
-
             <FormControl sx={{ m: 1, minWidth: 200 }}>
                 <InputLabel id="demo-simple-select-autowidth-label">Roles</InputLabel>
-                <Select onChange={handleChange} defaultValue={'Student'} id="grouped-select" label="Role">
+                <Select onChange={handleChange} value={role} id="grouped-select" label="Role">
                     {roles.map((g, i) => {
                         return (
                             <MenuItem key={i} value={g}>
@@ -117,13 +118,38 @@ export default function LibUsers() {
         )
     }
 
+    const GroupDropDown = () => {
+        const handleChange = (event) => {
+            setGroupId(event.target.value);
+            // console.log(groupId);
+        };
+        return (
+            <FormControl sx={{ m: 1, minWidth: 200 }}>
+                <InputLabel id="demo-simple-select-autowidth-label">Group ID</InputLabel>
+                <Select onChange={handleChange} value={groupId} id="grouped-select" label="Group ID">
+                    {[...Array(group_count)].map((_, i) => {
+                        return (
+                            <MenuItem key={i} value={i + 1}>
+                                {i + 1}
+                            </MenuItem>
+                        )
+                    })}
+                </Select>
+            </FormControl>
+        )
+    }
 
-    //render the actual display
+
+    //render the actual display getBooks({ id: groupId, search: e.target.value })
     return (
         <>
             <Container>
                 <h1>Manage Users</h1>
-                <RoleDropDown />
+                    <RoleDropDown />
+                    <GroupDropDown />
+                    <TextField id="outlined-basic" label="Search user" variant="outlined"
+                    sx={{marginTop:1}}
+                        onChange={(e) => { setSearch(e.target.value)}} />
                 <DisplayContent />
             </Container>
         </>

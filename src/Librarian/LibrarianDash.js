@@ -5,7 +5,6 @@ import Link from '@mui/material/Link';
 import Container from '@mui/material/Container';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import { SettingsSharp } from '@mui/icons-material';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -36,6 +35,7 @@ export default function LibrarianDash() {
           setStudents(data.summary.students);
           setTeachers(data.summary.teachers);
           setDownloads(data.summary.downloads);
+          localStorage.setItem('groupCount',data.summary.groups);
         } else {
           setGroups('Error cannot find data');
           setBooks('Error cannot find data');
