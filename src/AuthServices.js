@@ -135,13 +135,21 @@ export const GetUsers = async (info) => {
     var formdata = new FormData();
     formdata.append("api_token", process.env.REACT_APP_API_TOKEN);
     formdata.append("user_token", info.token);
-    formdata.append("search", info.search);
-    formdata.append("group_id", info.group_id);
-    formdata.append("role", info.role);
-    formdata.append("sort_order", info.sort_order);
+    if(info.search != null){
+        formdata.append("search", info.search);
+    }
+    if(info.group_id != null){
+        formdata.append("group_id", info.group_id);
+    }
+    if(info.role != null){
+        formdata.append("role", info.role);
+    }
+    if(info.role != null){
+        formdata.append("sort_order", info.sort_order);
+    }
 
     var requestOptions = {
-        signal:info.control,
+        signal: info.control,
         method: 'POST',
         body: formdata,
         redirect: 'follow'
@@ -152,5 +160,45 @@ export const GetUsers = async (info) => {
         .then(result => { return result })
         .catch(error => console.log('error', error));
     // console.log(res)
+    return res;
+}
+export const AddUpdateUser = async (info) => {
+
+console.log(info)
+
+    var formdata = new FormData();
+    formdata.append("api_token",process.env.REACT_APP_API_TOKEN);
+    formdata.append("user_token", info.user_token);
+    if(info.id != null){
+        formdata.append("user_id", info.id);
+    }
+    if(info.username != null){
+        formdata.append("username", info.username);
+    }
+    if(info.pwd != null){
+        formdata.append("pwd", info.pwd);
+    }
+    if(info.old_pwd != null){
+        formdata.append("old_pwd", info.old_pwd);
+    }
+    if(info.confirm_pwd != null){
+        formdata.append("confirm_pwd",info.confirm_pwd)
+    }
+    if(info.group_id != null){
+        formdata.append("group_id", info.group_id);
+    }
+    formdata.append("role", info.role);
+
+    var requestOptions = {
+        method: 'POST',
+        body: formdata,
+        redirect: 'follow'
+    };
+
+    var res = await fetch(process.env.REACT_APP_API_ADD_UP_USER, requestOptions)
+        .then(response => response.json())
+        .then(result => {return result})
+        .catch(error => console.log('error', error));
+        console.log(res);
     return res;
 }
