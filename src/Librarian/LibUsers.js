@@ -26,30 +26,40 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import CloseIcon from '@mui/icons-material/Close';
-import { GetUsers } from '../AuthServices'
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
+import { AddUpdateUser, GetUsers } from '../AuthServices'
+import { createRef } from 'react';
 
 export default function LibUsers() {
     const user = JSON.parse(localStorage.getItem('user'));
     const group_count = JSON.parse(localStorage.getItem('groupCount'))
     const [users, setUsers] = useState();
-    const [groupId, setGroupId] = useState(1);
-    const [groupIdAdd, setGroupIdAdd] = useState(1);
+    const [selectedUser, setSelectedUser] = useState();
+    const [groupId, setGroupId] = useState();
+    const [groupIdAdd, setGroupIdAdd] = useState('1');
     const [search, setSearch] = useState('');
     const [role, setRole] = useState('Student');
-    const [roleAdd, setRoleAdd] = useState('');
+    const [roleAdd, setRoleAdd] = useState('Student');
     const roles = ['Student', 'Teacher', 'Librarian']
-    const [openDialog, setOpenDialog] = useState(false);
+    const [openAddDialog, setOpenAddDialog] = useState(false);
+    const [openUpdateDialog, setOpenUpdateDialog] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
 
     const handleClose = () => {
         setAnchorEl(null);
     };
     const handleClickOpen = () => {
-        setOpenDialog(true);
+        setOpenAddDialog(true);
     };
-
+    const handleClickOpenUpdate = () => {
+        setOpenUpdateDialog(true);
+    };
     const handleCloseDialog = () => {
-        setOpenDialog(false);
+        setOpenAddDialog(false);
+    };
+    const handleCloseDialogUpdate = () => {
+        setOpenUpdateDialog(false);
     };
     useEffect(() => {
         const controller = new AbortController();
@@ -84,7 +94,7 @@ export default function LibUsers() {
                                     <TableCell align="center">Action</TableCell>
                                 </TableRow>
                             </TableHead>
-                            <TableBody>
+                            <TableBody experimentalfeature={{ lazyLoading: true }}>
                                 {[...users.users].map((user) => (
                                     <TableRow
                                         key={user.id}
@@ -99,7 +109,10 @@ export default function LibUsers() {
                                         <TableCell align="center">{user.remote_addr}</TableCell>
                                         <TableCell align="center">{user.role}</TableCell>
                                         <TableCell align="center">
-                                            <Button><EditIcon /></Button> /
+                                            <Button onClick={(event) => {
+                                                handleClickOpenUpdate(); setSelectedUser(user);
+                                            }}><EditIcon /></Button> /
+                                            {/* <Button onClick={(event)=>{AddUpdateUserDialog(user)}}><EditIcon /></Button> / */}
                                             <Button><DeleteIcon /></Button>
                                         </TableCell>
                                     </TableRow>
@@ -107,6 +120,8 @@ export default function LibUsers() {
                             </TableBody>
                         </Table>
                     </TableContainer>
+                    {/* <AddUpdateUserDialog/> */}
+
                 </>
             )
         } else {
@@ -127,8 +142,9 @@ export default function LibUsers() {
         return (
             <FormControl sx={{ m: 1, minWidth: 200 }}>
                 <InputLabel id="demo-simple-select-autowidth-label">Roles</InputLabel>
-                <Select onChange={handleChange} value={role} id="grouped-select" label="Role">
+                <Select onChange={handleChange} value={role} id="select" label="Role">
                     {roles.map((g, i) => {
+
                         return (
                             <MenuItem key={i} value={g}>
                                 {g}
@@ -149,7 +165,7 @@ export default function LibUsers() {
             // <FormControl sx={{ m: 1, minWidth: 200 }}>
             <>
                 <InputLabel id="demo-simple-select-autowidth-label">Roles</InputLabel>
-                <Select onChange={(event)=>{handleChange(event)}} value={roleAdd} id="grouped-select" label="Role" >
+                <Select onChange={(event) => { handleChange(event) }} value={roleAdd} id="grouped-select" label="Role" >
                     {roles.map((g, i) => {
                         return (
                             <MenuItem key={i} value={g}>
@@ -161,7 +177,7 @@ export default function LibUsers() {
             </>
         )
     }
-
+    //filter group dropdown
     const GroupDropDown = () => {
         const handleChange = (event) => {
             event.preventDefault();
@@ -171,7 +187,10 @@ export default function LibUsers() {
         return (
             <FormControl sx={{ m: 1, minWidth: 200 }}>
                 <InputLabel id="demo-simple-select-autowidth-label">Group ID</InputLabel>
-                <Select onChange={handleChange} value={groupId} id="grouped-select" label="Group ID">
+                <Select onChange={handleChange} value={groupId} id="select" label="Group ID">
+                    <MenuItem key={0} value={null}>
+                        None
+                    </MenuItem>
                     {[...Array(group_count)].map((_, i) => {
                         return (
                             <MenuItem key={i} value={i + 1}>
@@ -183,7 +202,8 @@ export default function LibUsers() {
             </FormControl>
         )
     }
-    const GroupAddDropDown = () => {
+    //In add user form drop down
+    const GroupAddDropDown = (info) => {
         const handleChange = (event) => {
             event.preventDefault();
             setGroupIdAdd(event.target.value);
@@ -207,11 +227,60 @@ export default function LibUsers() {
         )
     }
 
-    const AddUserDialog = (info) => {
+    const [err, setError] = useState(false);
+    const [errText, setErrorText] = useState('');
+
+    const AddUserDialog = useCallback(() => {
+        const username = createRef('');
+        const pwd = createRef('');
+        const old_pwd = createRef('');
+        const confirm_pwd = createRef('');
+        // const fAddr = createRef('');
+        // const rAddr = createRef('');
+        const handleSubmit = async (e) => {
+            e.preventDefault();
+            // console.log({
+            //     user_token: user.token,
+            //     id: info.id,
+            //     username: username.current.value,
+            //     pwd: pwd.current.value,
+            //     confirm_pwd: confirm_pwd.current.value,
+            //     group_id: groupIdAdd,
+            //     role: roleAdd
+            // })
+            if (username.current.value.length == 0) {
+                setErrorText('error usernmae')
+                setError(true);
+                return;
+            }
+            if (pwd.current.value.length == 0) {
+                setErrorText('error password')
+                setError(true);
+                return;
+            }
+            var res = await AddUpdateUser({
+                user_token: user.token,
+                // id: info.id,
+                username: username.current.value,
+                // old_pwd: old_pwd.current.value,
+                pwd: pwd.current.value,
+                confirm_pwd: confirm_pwd.current.value,
+                group_id: groupIdAdd,
+                role: roleAdd
+            });
+            if (res.status != "SUCCESS") {
+                setErrorText(res.error)
+                setError(true);
+                return;
+            }
+            setOpenAddDialog(false);
+            // console.log(res);
+        };
+
         return (
-            <div>
+            <form >
                 <Dialog
-                    open={openDialog}
+                    open={openAddDialog}
                     onClose={handleClose}
                     fullWidth
                     maxWidth='sm'
@@ -231,9 +300,14 @@ export default function LibUsers() {
                         <RoleAddDropDown />
                         <GroupAddDropDown />
 
+                        {err && <Alert id="alert" severity="error">
+                            <AlertTitle>{errText}</AlertTitle>
+                        </Alert>}
+
                         <TextField
                             // disabled
-                            defaultValue={info.username}
+                            inputRef={username}
+                            // defaultValue={info.username}
                             margin="dense"
                             id="username"
                             label="Username"
@@ -242,35 +316,136 @@ export default function LibUsers() {
                             variant="outlined" />
                         <TextField
                             // disabled
-                            defaultValue={info.pwd}
+                            inputRef={pwd}
+                            defaultValue={''}
                             margin="dense"
-                            label="Password"
+                            label="New Password"
                             type="password"
                             fullWidth
                             variant="outlined" />
                         <TextField
                             // disabled
-                            defaultValue={info.forward_addr}
+                            inputRef={confirm_pwd}
+                            defaultValue={''}
                             margin="dense"
-                            label="Forward Address"
+                            label="Confirm password"
+                            type="password"
+                            fullWidth
+                            variant="outlined" />
+
+                    </DialogContent>
+                    <Button type="submit" onClick={(e) => {handleSubmit(e)}}>Save</Button>
+                </Dialog>
+            </form>
+        );
+    })
+    const UpdateUserDialog = useCallback(() => {
+        const username = createRef('');
+        const pwd = createRef('');
+        const old_pwd = createRef('');
+        const confirm_pwd = createRef('');
+        const handleSubmit = async (e) => {
+            e.preventDefault();
+            // console.log({
+            //     user_token: user.token,
+            //     id: info.id,
+            //     username: username.current.value,
+            //     pwd: pwd.current.value,
+            //     confirm_pwd: confirm_pwd.current.value,
+            //     group_id: groupIdAdd,
+            //     role: roleAdd
+            // })
+            if (username.current.value.length == 0) {
+                setErrorText('error usernmae')
+                setError(true);
+                return;
+            }
+            if (pwd.current.value.length == 0) {
+                setErrorText('error password')
+                setError(true);
+                return;
+            }
+            var res = await AddUpdateUser({
+                user_token: user.token,
+                // id: info.id,
+                username: username.current.value,
+                // old_pwd: old_pwd.current.value,
+                pwd: pwd.current.value,
+                confirm_pwd: confirm_pwd.current.value,
+                group_id: groupIdAdd,
+                role: roleAdd
+            });
+            if (res.status != "SUCCESS") {
+                setErrorText(res.error)
+                setError(true);
+                return;
+            }
+            setOpenAddDialog(false);
+            // console.log(res);
+        };
+
+        return (
+            <form>
+                <Dialog
+                    open={openAddDialog}
+                    onClose={handleClose}
+                    fullWidth
+                    maxWidth='sm'
+                    scroll={'paper'}>
+                    <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        Add User
+                        <DialogActions>
+                            <CloseIcon onClick={handleCloseDialogUpdate}>Close</CloseIcon>
+                        </DialogActions>
+                    </DialogTitle>
+                    {/* for the profile pic */}
+                    <DialogContent sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center"
+                    }}>
+                        <RoleAddDropDown />
+                        <GroupAddDropDown />
+
+                        {err && <Alert id="alert" severity="error">
+                            <AlertTitle>{errText}</AlertTitle>
+                        </Alert>}
+
+                        {/* <TextField
+                            // disabled
+                            inputRef={username}
+                            // defaultValue={info.username}
+                            margin="dense"
+                            id="username"
+                            label="Username"
                             type="text"
+                            fullWidth
+                            variant="outlined" /> */}
+                        <TextField
+                            // disabled
+                            inputRef={pwd}
+                            defaultValue={''}
+                            margin="dense"
+                            label="New Password"
+                            type="password"
                             fullWidth
                             variant="outlined" />
                         <TextField
                             // disabled
-                            defaultValue={info.remote_addr}
+                            inputRef={confirm_pwd}
+                            defaultValue={''}
                             margin="dense"
-                            label="Remote Address"
-                            type="text"
+                            label="Confirm password"
+                            type="password"
                             fullWidth
                             variant="outlined" />
-                    </DialogContent>
-                    <Button >Save</Button>
-                </Dialog>
-            </div>
-        );
-    }
 
+                    </DialogContent>
+                    <Button type="submit" onClick={(e) => { e.preventDefault(); handleSubmit(e) }}>Save</Button>
+                </Dialog>
+            </form>
+        );
+    })
     //render the actual display
     return (
         <>
@@ -281,11 +456,15 @@ export default function LibUsers() {
                 <TextField id="outlined-basic" label="Search user" variant="outlined"
                     sx={{ marginTop: 1 }}
                     onChange={(e) => { setSearch(e.target.value) }} />
-                <Button color="success" variant="outlined" onClick={handleClickOpen}
+                <Button color="success" variant="outlined" onClick={(event) => {
+                    handleClickOpen();
+                    setSelectedUser(null);
+                }}
                     sx={{ height: 55, marginTop: 1, marginLeft: 1 }}>Add User <PersonAddAltIcon /></Button>
                 <DisplayContent />
             </Container>
-            <AddUserDialog />
+            <UpdateUserDialog {...selectedUser} />
+            <AddUserDialog {...selectedUser} />
         </>
     )
 }
