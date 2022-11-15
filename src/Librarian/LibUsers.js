@@ -417,7 +417,7 @@ export default function LibUsers() {
                     return;
                 }
             }
-            setOpenAddDialog(false);
+            setOpenUpdateDialog(false);
             console.log(res);
         };
 
