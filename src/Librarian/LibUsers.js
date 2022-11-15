@@ -440,7 +440,7 @@ export default function LibUsers() {
                     flexDirection: "column",
                     justifyContent: "center"
                 }}>
-                    <DialogTitle>Change user info</DialogTitle>
+                    <DialogTitle>Change user info (Require password to change infos)</DialogTitle>
                     <RoleAddDropDown {...{ role: info.role }} />
                     <GroupAddDropDown {...{ groupId: info.group_id }} />
 
