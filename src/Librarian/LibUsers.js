@@ -57,9 +57,11 @@ export default function LibUsers() {
     };
     const handleCloseDialog = () => {
         setOpenAddDialog(false);
+        setError(false);
     };
     const handleCloseDialogUpdate = () => {
         setOpenUpdateDialog(false);
+        setError(false);
     };
     useEffect(() => {
         const controller = new AbortController();
@@ -77,6 +79,7 @@ export default function LibUsers() {
 
     //Component
     const DisplayContent = useCallback((event) => {
+
         if (users != null && users.users.length > 0) {
             return (
                 <>
@@ -85,7 +88,7 @@ export default function LibUsers() {
                             <TableHead>
                                 <TableRow>
                                     <TableCell>ID</TableCell>
-                                    <TableCell align="center">Title</TableCell>
+                                    <TableCell align="center">Username</TableCell>
                                     <TableCell align="center">Password</TableCell>
                                     <TableCell align="center">Group ID</TableCell>
                                     <TableCell align="center">Forward addr</TableCell>
@@ -142,21 +145,19 @@ export default function LibUsers() {
         return (
             <FormControl sx={{ m: 1, minWidth: 200 }}>
                 <InputLabel id="demo-simple-select-autowidth-label">Roles</InputLabel>
-                <Select onChange={handleChange} value={role} id="select" label="Role">
+                <Select onChange={(e) => { handleChange(e) }} value={role} id="select" label="Role">
                     {roles.map((g, i) => {
-
                         return (
                             <MenuItem key={i} value={g}>
                                 {g}
-                            </MenuItem>
-                        )
+                            </MenuItem>)
                     })}
                 </Select>
             </FormControl>
         )
     }
     //this drop down is for the add user part
-    const RoleAddDropDown = () => {
+    const RoleAddDropDown = (info) => {
         const handleChange = (event) => {
             setRoleAdd(event.target.value);
         };
@@ -174,6 +175,7 @@ export default function LibUsers() {
                         )
                     })}
                 </Select>
+                {/* </FormControl> */}
             </>
         )
     }
@@ -213,7 +215,7 @@ export default function LibUsers() {
             // <FormControl sx={{ m: 1, minWidth: 200 }}>
             <>
                 <InputLabel id="demo-simple-select-autowidth-label">Group ID</InputLabel>
-                <Select onChange={(e) => { handleChange(e) }} value={groupIdAdd} id="grouped-select" label="Group ID">
+                <Select onChange={(e) => { handleChange(e) }} value={groupIdAdd} id="select" label="Group ID">
                     {[...Array(group_count)].map((_, i) => {
                         return (
                             <MenuItem key={i} value={i + 1}>
@@ -230,7 +232,7 @@ export default function LibUsers() {
     const [err, setError] = useState(false);
     const [errText, setErrorText] = useState('');
 
-    const AddUserDialog = useCallback(() => {
+    const AddUserDialog = useCallback((info) => {
         const username = createRef('');
         const pwd = createRef('');
         const old_pwd = createRef('');
@@ -278,7 +280,8 @@ export default function LibUsers() {
         };
 
         return (
-            <form >
+            <form>
+
                 <Dialog
                     open={openAddDialog}
                     onClose={handleClose}
@@ -334,116 +337,169 @@ export default function LibUsers() {
                             variant="outlined" />
 
                     </DialogContent>
-                    <Button type="submit" onClick={(e) => {handleSubmit(e)}}>Save</Button>
+                    <Button type="submit" onClick={(e) => { handleSubmit(e) }}>Save</Button>
                 </Dialog>
             </form>
         );
-    })
-    const UpdateUserDialog = useCallback(() => {
+    }, [openAddDialog, handleCloseDialog, err, errText,])
+
+    //for when click update user
+    var [res,setRes] = useState();
+    const UpdateUserDialog = useCallback((info) => {
+        // setError(false);
         const username = createRef('');
         const pwd = createRef('');
+        const new_pwd = createRef('');
         const old_pwd = createRef('');
         const confirm_pwd = createRef('');
-        const handleSubmit = async (e) => {
+        const handleSubmit = (e) => {
             e.preventDefault();
-            // console.log({
-            //     user_token: user.token,
-            //     id: info.id,
-            //     username: username.current.value,
-            //     pwd: pwd.current.value,
-            //     confirm_pwd: confirm_pwd.current.value,
-            //     group_id: groupIdAdd,
-            //     role: roleAdd
-            // })
-            if (username.current.value.length == 0) {
-                setErrorText('error usernmae')
-                setError(true);
-                return;
-            }
-            if (pwd.current.value.length == 0) {
-                setErrorText('error password')
-                setError(true);
-                return;
-            }
-            var res = await AddUpdateUser({
+            console.log({
                 user_token: user.token,
-                // id: info.id,
+                id: info.id,
                 username: username.current.value,
-                // old_pwd: old_pwd.current.value,
                 pwd: pwd.current.value,
+                old_pwd: old_pwd.current.value,
                 confirm_pwd: confirm_pwd.current.value,
                 group_id: groupIdAdd,
                 role: roleAdd
-            });
-            if (res.status != "SUCCESS") {
-                setErrorText(res.error)
+            })
+            if (username.current.value.length <= 0) {
+                setErrorText('error usernmae!')
                 setError(true);
                 return;
             }
+            // if (old_pwd.current.value.length <= 0) {
+            //     setErrorText('Need password for changes!')
+            //     setError(true);
+            //     // old_pwd.current.value = null
+            //     // return;
+            // }
+            if (new_pwd.current.value != confirm_pwd.current.value && old_pwd.current.value.length > 0) {
+                setErrorText("New password  doesn't match confirm password!")
+                setError(true);
+                return;
+            }
+
+            //for update password
+            if (new_pwd.current.value.length > 0) {
+                AddUpdateUser({
+                    user_token: user.token,
+                    id: info.id,
+                    username: username.current.value,
+                    old_pwd: old_pwd.current.value,
+                    pwd: new_pwd.current.value,
+                    confirm_pwd: confirm_pwd.current.value,
+                    group_id: groupIdAdd,
+                    role: roleAdd
+                }).then(data=> setRes(data));
+                
+                if (res.status != "SUCCESS") {
+                    setErrorText(res.error)
+                    setError(true);
+                    return;
+                }
+            }
+            //for update user info
+            if (pwd.current.value.length > 0) {
+                AddUpdateUser({
+                    user_token: user.token,
+                    id: info.id,
+                    username: username.current.value,
+                    old_pwd: pwd.current.value,
+                    group_id: groupIdAdd,
+                    role: roleAdd
+                }).then(data=> setRes(data));
+
+                if (res.status != "SUCCESS") {
+                    setErrorText(res.error)
+                    setError(true);
+                    return;
+                }
+            }
             setOpenAddDialog(false);
-            // console.log(res);
+            console.log(res);
         };
 
         return (
-            <form>
-                <Dialog
-                    open={openAddDialog}
-                    onClose={handleClose}
-                    fullWidth
-                    maxWidth='sm'
-                    scroll={'paper'}>
-                    <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        Add User
-                        <DialogActions>
-                            <CloseIcon onClick={handleCloseDialogUpdate}>Close</CloseIcon>
-                        </DialogActions>
-                    </DialogTitle>
-                    {/* for the profile pic */}
-                    <DialogContent sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center"
-                    }}>
-                        <RoleAddDropDown />
-                        <GroupAddDropDown />
+            <Dialog
+                open={openUpdateDialog}
+                onClose={handleCloseDialogUpdate}
+                fullWidth
+                maxWidth='sm'
+                scroll={'paper'}>
+                <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    Update user
+                    <DialogActions>
+                        <CloseIcon onClick={handleCloseDialogUpdate}>Close</CloseIcon>
+                    </DialogActions>
+                </DialogTitle>
+                {/* for the profile pic */}
+                <DialogContent sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center"
+                }}>
+                    <DialogTitle>Change user info</DialogTitle>
+                    <RoleAddDropDown {...{ role: info.role }} />
+                    <GroupAddDropDown {...{ groupId: info.group_id }} />
 
-                        {err && <Alert id="alert" severity="error">
-                            <AlertTitle>{errText}</AlertTitle>
-                        </Alert>}
+                    {err && <Alert id="alert" severity="error">
+                        <AlertTitle>{errText}</AlertTitle>
+                    </Alert>}
 
-                        {/* <TextField
-                            // disabled
-                            inputRef={username}
-                            // defaultValue={info.username}
-                            margin="dense"
-                            id="username"
-                            label="Username"
-                            type="text"
-                            fullWidth
-                            variant="outlined" /> */}
-                        <TextField
-                            // disabled
-                            inputRef={pwd}
-                            defaultValue={''}
-                            margin="dense"
-                            label="New Password"
-                            type="password"
-                            fullWidth
-                            variant="outlined" />
-                        <TextField
-                            // disabled
-                            inputRef={confirm_pwd}
-                            defaultValue={''}
-                            margin="dense"
-                            label="Confirm password"
-                            type="password"
-                            fullWidth
-                            variant="outlined" />
+                    <TextField
+                        // disabled
+                        inputRef={username}
+                        defaultValue={info.username}
+                        margin="dense"
+                        id="username"
+                        label="Username"
+                        type="text"
+                        fullWidth
+                        variant="outlined" />
+                    <TextField
+                        // disabled
+                        inputRef={pwd}
+                        defaultValue={''}
+                        margin="dense"
+                        label="Password"
+                        type="password"
+                        fullWidth
+                        variant="outlined" />
 
-                    </DialogContent>
-                    <Button type="submit" onClick={(e) => { e.preventDefault(); handleSubmit(e) }}>Save</Button>
-                </Dialog>
-            </form>
+                    <DialogTitle>Change password (Optional)</DialogTitle>
+                    <TextField
+                        // disabled
+                        inputRef={old_pwd}
+                        defaultValue={''}
+                        margin="dense"
+                        label="Old password"
+                        type="password"
+                        fullWidth
+                        variant="outlined" />
+                    <TextField
+                        // disabled
+                        inputRef={new_pwd}
+                        defaultValue={''}
+                        margin="dense"
+                        label="New Password"
+                        type="password"
+                        fullWidth
+                        variant="outlined" />
+                    <TextField
+                        // disabled
+                        inputRef={confirm_pwd}
+                        defaultValue={''}
+                        margin="dense"
+                        label="Confirm password"
+                        type="password"
+                        fullWidth
+                        variant="outlined" />
+
+                </DialogContent>
+                <Button type="submit" onClick={(e) => { e.preventDefault(); handleSubmit(e) }}>Save</Button>
+            </Dialog>
         );
     })
     //render the actual display
@@ -464,7 +520,7 @@ export default function LibUsers() {
                 <DisplayContent />
             </Container>
             <UpdateUserDialog {...selectedUser} />
-            <AddUserDialog {...selectedUser} />
+            <AddUserDialog {...{ role: "Student" }} />
         </>
     )
 }
