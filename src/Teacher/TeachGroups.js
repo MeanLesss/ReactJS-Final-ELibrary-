@@ -83,7 +83,7 @@ export default function TeachGroups() {
           <Grid
             container
             spacing={2}>
-            {[...groupList].map((group) => (
+            {[...groupList.groups].map((group) => (
               <Grid
                 key={group.id}
                 {...{ xs: 12, sm: 6, md: 4, lg: 3 }}

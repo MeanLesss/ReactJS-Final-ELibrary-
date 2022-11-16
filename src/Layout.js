@@ -63,7 +63,7 @@ export default function Layout() {
   }, [user.token])
   //Display profile popUp
   const ProfileDialog = () => {
-    if (groups) {
+    if (groups.groups) {
       return (
         <div>
           <Dialog
@@ -140,7 +140,7 @@ export default function Layout() {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {[...groups].map((group) => (
+                    {[...groups.groups].map((group) => (
                       <TableRow
                         key={group.id}
                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>

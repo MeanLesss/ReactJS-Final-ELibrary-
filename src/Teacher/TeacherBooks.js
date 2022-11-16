@@ -29,9 +29,9 @@ export default function TeacherBooks() {
   const [groupId, setGroupId] = useState(1);
   // console.log(groups)
   useEffect((event) => {
-    GetBooks({ token: user.token, group_id: groups[0].id, search: '', sort: 'asc' })
+    GetBooks({ token: user.token, group_id: groups.groups[0].id, search: '', sort: 'asc' })
       .then(data => { setBooks(data); });
-  }, [user.token, groups[0].id]);
+  }, [user.token, groups.groups[0].id]);
   // console.log(books);
   const getBooks = useCallback((info) => {
     GetBooks({ token: user.token, group_id: info.id, search: info.search, sort: 'asc' })

@@ -33,7 +33,9 @@ import { createRef } from 'react';
 
 export default function LibUsers() {
     const user = JSON.parse(localStorage.getItem('user'));
-    const group_count = JSON.parse(localStorage.getItem('groupCount'))
+    const group_count = JSON.parse(localStorage.getItem('groupCount'));
+    const groups = JSON.parse(localStorage.getItem('groups'));
+    let [isChangeGroup,setIsChangeGroup] = useState(false);
     const [users, setUsers] = useState();
     const [selectedUser, setSelectedUser] = useState();
     const [groupId, setGroupId] = useState();
@@ -62,6 +64,7 @@ export default function LibUsers() {
     const handleCloseDialogUpdate = () => {
         setOpenUpdateDialog(false);
         setError(false);
+        setIsChangeGroup(false);
     };
     useEffect(() => {
         const controller = new AbortController();
@@ -193,10 +196,10 @@ export default function LibUsers() {
                     <MenuItem key={0} value={null}>
                         None
                     </MenuItem>
-                    {[...Array(group_count)].map((_, i) => {
+                    {[...groups.groups].map((group, i) => {
                         return (
-                            <MenuItem key={i} value={i + 1}>
-                                {i + 1}
+                            <MenuItem key={group.id} value={group.id}>
+                                 {`${group.id}. ${group.name}`}
                             </MenuItem>
                         )
                     })}
@@ -206,20 +209,25 @@ export default function LibUsers() {
     }
     //In add user form drop down
     const GroupAddDropDown = (info) => {
+        if(!isChangeGroup){
+            setGroupIdAdd(info.groupId);
+        }
         const handleChange = (event) => {
+            setIsChangeGroup(true);
             event.preventDefault();
             setGroupIdAdd(event.target.value);
             // console.log(groupId);
+            console.log(groupIdAdd);
         };
         return (
             // <FormControl sx={{ m: 1, minWidth: 200 }}>
             <>
                 <InputLabel id="demo-simple-select-autowidth-label">Group ID</InputLabel>
                 <Select onChange={(e) => { handleChange(e) }} value={groupIdAdd} id="select" label="Group ID">
-                    {[...Array(group_count)].map((_, i) => {
+                {[...groups.groups].map((group, i) => {
                         return (
-                            <MenuItem key={i} value={i + 1}>
-                                {i + 1}
+                            <MenuItem key={group.id} value={group.id}>
+                                {`${group.id}. ${group.name}`}
                             </MenuItem>
                         )
                     })}
@@ -411,7 +419,7 @@ export default function LibUsers() {
                     role: roleAdd
                 }).then(data=> setRes(data));
 
-                if (res.status != "SUCCESS") {
+                if (res.status !== "SUCCESS") {
                     setErrorText(res.error)
                     setError(true);
                     return;
