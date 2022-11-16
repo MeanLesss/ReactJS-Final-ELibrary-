@@ -80,12 +80,7 @@ export const GetStudents = async (info) => {
     // console.log(res);
     return res;
 }
-export const GetSearchGroup = () => {
 
-}
-export const GetSearchStudent = () => {
-
-}
 
 export const GetBooks = async (info) => {
     var formdata = new FormData();
@@ -135,16 +130,16 @@ export const GetUsers = async (info) => {
     var formdata = new FormData();
     formdata.append("api_token", process.env.REACT_APP_API_TOKEN);
     formdata.append("user_token", info.token);
-    if(info.search != null){
+    if (info.search != null) {
         formdata.append("search", info.search);
     }
-    if(info.group_id != null){
+    if (info.group_id != null) {
         formdata.append("group_id", info.group_id);
     }
-    if(info.role != null){
+    if (info.role != null) {
         formdata.append("role", info.role);
     }
-    if(info.role != null){
+    if (info.role != null) {
         formdata.append("sort_order", info.sort_order);
     }
 
@@ -164,27 +159,27 @@ export const GetUsers = async (info) => {
 }
 export const AddUpdateUser = async (info) => {
 
-console.log(info)
+    console.log(info)
 
     var formdata = new FormData();
-    formdata.append("api_token",process.env.REACT_APP_API_TOKEN);
+    formdata.append("api_token", process.env.REACT_APP_API_TOKEN);
     formdata.append("user_token", info.user_token);
-    if(info.id != null){
+    if (info.id != null) {
         formdata.append("user_id", info.id);
     }
-    if(info.username != null){
+    if (info.username != null) {
         formdata.append("username", info.username);
     }
-    if(info.pwd != null){
+    if (info.pwd != null) {
         formdata.append("pwd", info.pwd);
     }
-    if(info.old_pwd != null){
+    if (info.old_pwd != null) {
         formdata.append("old_pwd", info.old_pwd);
     }
-    if(info.confirm_pwd != null){
-        formdata.append("confirm_pwd",info.confirm_pwd)
+    if (info.confirm_pwd != null) {
+        formdata.append("confirm_pwd", info.confirm_pwd)
     }
-    if(info.group_id != null){
+    if (info.group_id != null) {
         formdata.append("group_id", info.group_id);
     }
     formdata.append("role", info.role);
@@ -197,8 +192,30 @@ console.log(info)
 
     var res = await fetch(process.env.REACT_APP_API_ADD_UP_USER, requestOptions)
         .then(response => response.json())
-        .then(result => {return result})
+        .then(result => { return result })
         .catch(error => console.log('error', error));
-        console.log(res);
+    console.log(res);
+    return res;
+}
+export const GetGroupLibrarian = async (info) => {
+    var formdata = new FormData();
+    formdata.append("api_token", process.env.REACT_APP_API_TOKEN);
+    formdata.append("user_token",info.token);
+    if(info.search != null){
+        formdata.append("search", info.search);
+    }
+    formdata.append("sort_order", "asc");
+
+    var requestOptions = {
+        method: 'POST',
+        body: formdata,
+        redirect: 'follow'
+    };
+
+    var res = await fetch(process.env.REACT_APP_API_GROUPS, requestOptions)
+        .then(response => response.json())
+        .then(result => { return result })
+        .catch(error => console.log('error', error));
+    // console.log(res);
     return res;
 }

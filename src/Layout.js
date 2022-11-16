@@ -63,7 +63,7 @@ export default function Layout() {
   }, [user.token])
   //Display profile popUp
   const ProfileDialog = () => {
-    if (groups.groups) {
+    if (groups) {
       return (
         <div>
           <Dialog
