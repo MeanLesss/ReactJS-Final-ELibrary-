@@ -197,11 +197,12 @@ export const AddUpdateUser = async (info) => {
     console.log(res);
     return res;
 }
+
 export const GetGroupLibrarian = async (info) => {
     var formdata = new FormData();
     formdata.append("api_token", process.env.REACT_APP_API_TOKEN);
-    formdata.append("user_token",info.token);
-    if(info.search != null){
+    formdata.append("user_token", info.token);
+    if (info.search != null) {
         formdata.append("search", info.search);
     }
     formdata.append("sort_order", "asc");
@@ -217,5 +218,27 @@ export const GetGroupLibrarian = async (info) => {
         .then(result => { return result })
         .catch(error => console.log('error', error));
     // console.log(res);
+    return res;
+}
+
+export const AddUpdateGroup = async (info) => {
+    var formdata = new FormData();
+    if(info.group_id != null){
+        formdata.append("group_id", info.group_id);
+    }
+    formdata.append("api_token", process.env.REACT_APP_API_TOKEN);
+    formdata.append("user_token", info.token);
+    formdata.append("name", info.name);
+
+    var requestOptions = {
+        method: 'POST',
+        body: formdata,
+        redirect: 'follow'
+    };
+
+    var res = await fetch("http://172.104.166.110/FT_SD_M_11/api/addorupdategroup.php", requestOptions)
+        .then(response => response.json())
+        .then(result => {return result})
+        .catch(error => console.log('error', error));
     return res;
 }
