@@ -56,6 +56,9 @@ export default function TeachGroups() {
             variant="h5"
             component="div"
             sx={{
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'clip',
               display: 'flex',
               justifyContent: 'center',
               fontSize: 30,

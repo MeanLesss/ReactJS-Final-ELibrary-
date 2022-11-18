@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect , createRef } from 'react'
+import React, { useState, useCallback, useEffect, createRef } from 'react'
 import Container from '@mui/material/Container';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -16,40 +16,60 @@ import DialogContentText from '@mui/material/DialogContentText';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import DialogTitle from '@mui/material/DialogTitle';
-import { GetGroupLibrarian } from '../AuthServices';
+import { AddUpdateGroup, GetGroupLibrarian } from '../AuthServices';
+import { Hidden } from '@mui/material';
 
 export default function LibGroups() {
 
   const userToken = JSON.parse(localStorage.getItem('user'));
   const [search, setSearch] = useState();
   const [groups, setGroups] = useState();
+  const [selectGroup, setSelectedGroup] = useState();
+  const [openAddDialog, setOpenAddDialog] = useState(false);
+  const [openUpdateDialog, setOpenUpdateDialog] = useState(false);
+
 
   useEffect(() => {
     GetGroupLibrarian({ token: userToken.token, search: search }).then((data) => setGroups(data))
   }, [search])
-  console.log(groups);
+  // console.log(groups);
 
-  const GroupCard = useCallback((props) => { //render the card style
+  const UpdateGroup = (group) => {
+    setOpenUpdateDialog(true);
+  }
+
+  const GroupCard = useCallback((prop) => { //render the card style
     return (
       <Card>
         <CardContent >
           <Typography sx={{ fontSize: 14 }} color="black" gutterBottom>
-            ID : {props.id}
+            ID : {prop.id}
           </Typography>
           <Typography
             variant="h5"
             component="div"
             sx={{
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'clip',
               display: 'flex',
               justifyContent: 'center',
               fontSize: 30,
               backgroundColor: 'lightgreen',
               borderRadius: '5px'
             }}>
-            {props.title}
+            {prop.title}
           </Typography>
         </CardContent>
-      </Card>
+        <CardActions>
+          <Button size="/small" onClick={event => {
+            setSelectedGroup(prop);
+            UpdateGroup(event, { id: prop.id, group_name: prop.title })
+          }}>
+            Update
+          </Button>
+        </CardActions>
+      </Card >
     )
   })
   const DisplayContent = useCallback((event) => {
@@ -81,85 +101,143 @@ export default function LibGroups() {
     }
   })
 
+  const [err, setError] = useState(false);
+  const [errText, setErrorText] = useState('');
+
+  const handleClickOpen = (e) => {
+    setOpenAddDialog(true);
+    // e.preventDefault();
+  };
+  const handleCloseDialog = () => {
+    setOpenAddDialog(false);
+    setError(false);
+  };
+  const handleClickOpenUpdate = (e) => {
+    setOpenUpdateDialog(true);
+    e.preventDefault();
+  };
+  const handleCloseDialogUpdate = () => {
+    setOpenUpdateDialog(false);
+    setError(false);
+  };
+
+  const UpdateGroupDialog = useCallback((info) => {
+    const name = createRef('');
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      var res = await AddUpdateGroup({
+        group_id: info.id,
+        token: userToken.token,
+        name: name.current.value,
+      });
+      if (res.status !== "SUCCESS") {
+        setErrorText(res.error);
+        setError(true);
+        return;
+      }
+      GetGroupLibrarian({ token: userToken.token, search: search }).then((data) => setGroups(data))
+      setOpenUpdateDialog(false);
+      // console.log(res);
+    };
+    // console.log(info)
+
+    return (
+      <Dialog
+        open={openUpdateDialog}
+        fullWidth
+        maxWidth='sm'
+        scroll={'paper'}>
+        <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          Update Group
+          <DialogActions>
+            <CloseIcon onClick={handleCloseDialogUpdate}>Close</CloseIcon>
+          </DialogActions>
+        </DialogTitle>
+        {/* for the profile pic */}
+        <DialogContent sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center"
+        }}>
+          {err && <Alert id="alert" severity="error">
+            <AlertTitle>{errText}</AlertTitle>
+          </Alert>}
+
+          <TextField
+            // disabled
+            inputRef={name}
+            defaultValue={info.title}
+            margin="dense"
+            id="username"
+            label="Username"
+            type="text"
+            fullWidth
+            variant="outlined" />
+        </DialogContent>
+        <Button onClick={(e) => {
+          handleSubmit(e)
+        }}>Save</Button>
+      </Dialog>
+    );
+  })
   const AddGroupDialog = useCallback((info) => {
     const name = createRef('');
-
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        // console.log({
-        //     user_token: user.token,
-        //     id: info.id,
-        //     username: username.current.value,
-        //     pwd: pwd.current.value,
-        //     confirm_pwd: confirm_pwd.current.value,
-        //     group_id: groupIdAdd,
-        //     role: roleAdd
-        // })
-
-        // var res = await AddUpdateUser({
-        //     user_token: user.token,
-        //     // id: info.id,
-        //     username: username.current.value,
-        //     // old_pwd: old_pwd.current.value,
-        //     pwd: pwd.current.value,
-        //     confirm_pwd: confirm_pwd.current.value,
-        //     group_id: groupIdAdd,
-        //     role: roleAdd
-        // });
-        // if (res.status != "SUCCESS") {
-        //     setErrorText(res.error)
-        //     setError(true);
-        //     return;
-        // }
-        setOpenAddDialog(false);
-        // console.log(res);
+      e.preventDefault();
+      var res = await AddUpdateGroup({
+        token: userToken.token,
+        name: name.current.value,
+      });
+      if (res.status !== "SUCCESS") {
+        setErrorText(res.error);
+        setError(true);
+        return;
+      }
+      GetGroupLibrarian({ token: userToken.token, search: search }).then((data) => setGroups(data))
+      setOpenAddDialog(false);
+      // console.log(info);
     };
 
     return (
-        <form>
+      <Dialog
+        open={openAddDialog}
+        fullWidth
+        maxWidth='sm'
+        scroll={'paper'}>
+        <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          Add Group
+          <DialogActions>
+            <CloseIcon onClick={handleCloseDialog}>Close</CloseIcon>
+          </DialogActions>
+        </DialogTitle>
+        {/* for the profile pic */}
+        <DialogContent sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center"
+        }}>
+          {err && <Alert id="alert" severity="error">
+            <AlertTitle>{errText}</AlertTitle>
+          </Alert>}
 
-            <Dialog
-                open={openAddDialog}
-                onClose={handleClose}
-                fullWidth
-                maxWidth='sm'
-                scroll={'paper'}>
-                <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    Add Group
-                    <DialogActions>
-                        <CloseIcon onClick={handleCloseDialog}>Close</CloseIcon>
-                    </DialogActions>
-                </DialogTitle>
-                {/* for the profile pic */}
-                <DialogContent sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center"
-                }}>
-                    <RoleAddDropDown />
-                    <GroupAddDropDown />
-
-                    {err && <Alert id="alert" severity="error">
-                        <AlertTitle>{errText}</AlertTitle>
-                    </Alert>}
-
-                    <TextField
-                        // disabled
-                        inputRef={name}
-                        // defaultValue={info.username}
-                        margin="dense"
-                        id="username"
-                        label="Username"
-                        type="text"
-                        fullWidth
-                        variant="outlined" />
-                </DialogContent>
-                {/* <Button type="submit" onClick={(e) => { handleSubmit(e) }}>Save</Button> */}
-            </Dialog>
-        </form>
+          <TextField
+            // disabled
+            inputRef={name}
+            // defaultValue={info.name}
+            margin="dense"
+            id="username"
+            label="Username"
+            type="text"
+            fullWidth
+            variant="outlined" />
+        </DialogContent>
+        <Button onClick={(e) => {
+          handleSubmit(e)
+        }}>Save</Button>
+      </Dialog>
     );
-}, [openAddDialog, handleCloseDialog, err, errText,])
-
+  })
+  // , [openAddDialog, handleCloseDialog, err, errText,]
   //return actuall interface
   return (
     <>
@@ -169,8 +247,8 @@ export default function LibGroups() {
           sx={{ marginTop: 1 }}
           onChange={(e) => { setSearch(e.target.value) }} />
         <Button color="success" variant="outlined" onClick={(event) => {
-          // handleClickOpen();
-          // setSelectedUser(null);
+          handleClickOpen();
+          setSelectedGroup(null);
         }}
           sx={{ height: 55, marginTop: 1, marginLeft: 1 }}>
           Add Group
@@ -179,7 +257,8 @@ export default function LibGroups() {
         {/* call a  function to display */}
         <DisplayContent />
       </Container>
-      <AddGroupDialog/>
+      <UpdateGroupDialog {...selectGroup} />
+      <AddGroupDialog {...selectGroup} />
     </>
   )
 }
