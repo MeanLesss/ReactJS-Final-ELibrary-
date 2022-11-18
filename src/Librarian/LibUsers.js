@@ -1,9 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import Container from '@mui/material/Container';
-import Breadcrumbs from '@mui/material/Breadcrumbs';
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import Typography from '@mui/material/Typography';
-import Avatar from '@mui/material/Avatar';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -30,12 +26,14 @@ import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import { AddUpdateUser, GetUsers } from '../AuthServices'
 import { createRef } from 'react';
+import CachedIcon from '@mui/icons-material/Cached';
+import { useRouteLoaderData } from 'react-router-dom';
 
 export default function LibUsers() {
     const user = JSON.parse(localStorage.getItem('user'));
     const group_count = JSON.parse(localStorage.getItem('groupCount'));
     const groups = JSON.parse(localStorage.getItem('groups'));
-    let [isChangeGroup,setIsChangeGroup] = useState(false);
+    let [isChangeGroup, setIsChangeGroup] = useState(false);
     const [users, setUsers] = useState();
     const [selectedUser, setSelectedUser] = useState();
     const [groupId, setGroupId] = useState();
@@ -199,7 +197,7 @@ export default function LibUsers() {
                     {[...groups.groups].map((group, i) => {
                         return (
                             <MenuItem key={group.id} value={group.id}>
-                                 {`${group.id}. ${group.name}`}
+                                {`${group.id}. ${group.name}`}
                             </MenuItem>
                         )
                     })}
@@ -209,7 +207,7 @@ export default function LibUsers() {
     }
     //In add user form drop down
     const GroupAddDropDown = (info) => {
-        if(!isChangeGroup){
+        if (!isChangeGroup) {
             setGroupIdAdd(info.groupId);
         }
         const handleChange = (event) => {
@@ -224,7 +222,7 @@ export default function LibUsers() {
             <>
                 <InputLabel id="demo-simple-select-autowidth-label">Group ID</InputLabel>
                 <Select onChange={(e) => { handleChange(e) }} value={groupIdAdd} id="select" label="Group ID">
-                {[...groups.groups].map((group, i) => {
+                    {[...groups.groups].map((group, i) => {
                         return (
                             <MenuItem key={group.id} value={group.id}>
                                 {`${group.id}. ${group.name}`}
@@ -282,6 +280,15 @@ export default function LibUsers() {
                 setErrorText(res.error)
                 setError(true);
                 return;
+            }
+            const controller = new AbortController();
+            GetUsers({
+                token: user.token, search: search, group_id: groupId,
+                role: role, sort_order: 'asc', control: controller.signal
+            })
+                .then(data => { setUsers(data) })
+            return () => {
+                controller.abort();
             }
             setOpenAddDialog(false);
             // console.log(res);
@@ -352,7 +359,7 @@ export default function LibUsers() {
     }, [openAddDialog, handleCloseDialog, err, errText,])
 
     //for when click update user
-    var [res,setRes] = useState();
+    var [res, setRes] = useState();
     const UpdateUserDialog = useCallback((info) => {
         // setError(false);
         const username = createRef('');
@@ -400,8 +407,8 @@ export default function LibUsers() {
                     confirm_pwd: confirm_pwd.current.value,
                     group_id: groupIdAdd,
                     role: roleAdd
-                }).then(data=> setRes(data));
-                
+                }).then(data => setRes(data));
+
                 if (res.status != "SUCCESS") {
                     setErrorText(res.error)
                     setError(true);
@@ -417,13 +424,22 @@ export default function LibUsers() {
                     old_pwd: pwd.current.value,
                     group_id: groupIdAdd,
                     role: roleAdd
-                }).then(data=> setRes(data));
+                }).then(data => setRes(data));
 
                 if (res.status !== "SUCCESS") {
                     setErrorText(res.error)
                     setError(true);
                     return;
                 }
+            }
+            const controller = new AbortController();
+            GetUsers({
+                token: user.token, search: search, group_id: groupId,
+                role: role, sort_order: 'asc', control: controller.signal
+            })
+                .then(data => { setUsers(data) })
+            return () => {
+                controller.abort();
             }
             setOpenUpdateDialog(false);
             console.log(res);
@@ -510,6 +526,18 @@ export default function LibUsers() {
             </Dialog>
         );
     })
+
+    const RefreshList = () => {
+        const controller = new AbortController();
+        GetUsers({
+            token: user.token, search: search, group_id: groupId,
+            role: role, sort_order: 'asc', control: controller.signal
+        })
+            .then(data => { setUsers(data) })
+        return () => {
+            controller.abort();
+        }
+    }
     //render the actual display
     return (
         <>
@@ -524,7 +552,14 @@ export default function LibUsers() {
                     handleClickOpen();
                     setSelectedUser(null);
                 }}
-                    sx={{ height: 55, marginTop: 1, marginLeft: 1 }}>Add User <PersonAddAltIcon /></Button>
+                    sx={{ height: 55, marginTop: 1, marginLeft: 1 }}>Add User <PersonAddAltIcon />
+                </Button>
+                <Button color="success" variant="outlined" onClick={(event) => {
+                    RefreshList();
+                }}
+                    sx={{ height: 55, marginTop: 1, marginLeft: 1 }}>
+                    <CachedIcon />
+                </Button>
                 <DisplayContent />
             </Container>
             <UpdateUserDialog {...selectedUser} />
