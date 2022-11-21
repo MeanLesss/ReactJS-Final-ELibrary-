@@ -100,7 +100,7 @@ export default function TeacherBooks() {
           <FormControl sx={{ m: 1, minWidth: 300 }}>
             <InputLabel id="demo-simple-select-autowidth-label">Groups</InputLabel>
             <Select onChange={handleChange} defaultValue={1} id="grouped-select" label="Grouping">
-              {groups.map((g) => {
+              {groups.groups.map((g) => {
                 return (
                   <MenuItem key={g.id} value={g.id}>
                     {g.name}
